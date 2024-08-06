@@ -15,7 +15,7 @@ win.resizable(False,False)
 #=====================App Logo============================
 #=====================Dependencies========================
 def run_student():
-    import runner
+    import student_login
     return
 def run_instructor():
     import teacher_login
@@ -35,7 +35,7 @@ Student=Button(F2,text="Student",padx=20,pady=20,width=10,background=Buttoncolor
 Student.place(x=60,y=70)
 Instructor=Button(F2,text="Instructor",padx=20,pady=20,width=10,background=Buttoncolor,fg=buttontxt,command=run_instructor)
 Instructor.place(x=220,y=70)
-Admin=Button(F2,text="Administrator",padx=20,pady=20,width=10,background=Buttoncolor,fg=buttontxt)
+Admin=Button(F2,text="Administrator",padx=20,pady=20,width=10,background=Buttoncolor,fg=buttontxt,command=run_admin)
 Admin.place(x=370,y=70)
 #===================Copyrights============================
 Copy=Label(win,text="COPYRIGHTS ABC INSTITUTE OF TECHNOLOGY",font=("timesnewroman",10,"bold"),border="2")
