@@ -13,9 +13,16 @@ Buttoncolor="#F9DBBD"
 buttontxt="#0D0628"
 win.resizable(False,False)
 #=====================App Logo============================
-#=====================Title===============================
+#=====================Dependencies========================
 def run_student():
     import runner
+    return
+def run_instructor():
+    import teacher_login
+    return
+def run_admin():
+    import admin_login
+#=====================Title===============================
 F1= Frame(win,bg=backcolour,relief="solid",border="2")
 F1.pack(fill="x",pady=10,padx=2)
 a= Label(F1,text="ABC INSTITUTE OF TECHNOLOGY ",font=("timesnewroman",20,"bold"),fg=front,bg=backcolour,justify=CENTER)
@@ -26,7 +33,7 @@ F2.place(x=0,y=80,relwidth=1,height=350)
 # ==================Login Buttons==========================
 Student=Button(F2,text="Student",padx=20,pady=20,width=10,background=Buttoncolor,command=run_student,fg=buttontxt,relief=SUNKEN)
 Student.place(x=60,y=70)
-Instructor=Button(F2,text="Instructor",padx=20,pady=20,width=10,background=Buttoncolor,fg=buttontxt)
+Instructor=Button(F2,text="Instructor",padx=20,pady=20,width=10,background=Buttoncolor,fg=buttontxt,command=run_instructor)
 Instructor.place(x=220,y=70)
 Admin=Button(F2,text="Administrator",padx=20,pady=20,width=10,background=Buttoncolor,fg=buttontxt)
 Admin.place(x=370,y=70)
