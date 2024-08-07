@@ -4,7 +4,7 @@ import mysql.connector
 from tkinter import messagebox as tmsg
 #=====================Initialization======================
 Win=Tk()
-Win.title("Student Login")
+Win.title("Instructor Login")
 Win.geometry("500x500")
 Win.resizable(False,False)
 backcolour="#DA627D"
@@ -22,6 +22,9 @@ mydb = mysql.connector.connect(
 
 mycursor = mydb.cursor()
 #======================Captcha===========================
+def back_command():
+    Win.destroy()
+    import admin
 captcha=random.randint(10000,99999)
 def generate_new_captcha():
     global captcha
@@ -70,10 +73,12 @@ def reload_window():
         reload_window()'''
 
 #====================Environment=======================
-F3=Label(Win,text="Instructor Login",font=style,background=backcolour2,foreground=front,border="2",padx=1)
-F3.place(x=0,y=0,relwidth=1,height=30)
+F3=Label(Win,text="Instructor Login",font=style,background="black",foreground="white",border="2",padx=1)
+F3.place(x=0,y=0,relwidth=1,height=50)
+Back=Button(Win,text="<",font=style,command=back_command,background="black",fg="white",relief="raised")
+Back.place(x=0,y=0,height=50,width=50)
 F4=Frame(Win,background=backcolour,padx=17)
-F4.place(x=0,y=37,relwidth=1,relheight=0.9)
+F4.place(x=0,y=55,relwidth=1,relheight=0.9)
 F5=Label(F4,text="Instructor ID:",font=style,background=backcolour,foreground=front,anchor="nw",width=13,border="2")
 F5.grid(row=0,column=0,pady=2)
 F6=Label(F4,text="Password:",font=style,background=backcolour,foreground=front,anchor="nw",width=13,border="2")

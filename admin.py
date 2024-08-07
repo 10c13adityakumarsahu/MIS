@@ -14,19 +14,27 @@ buttontxt="#0D0628"
 win.resizable(False,False)
 #=====================App Logo============================
 #=====================Dependencies========================
+def back_command():
+    win.destroy()
 def run_student():
+    win.destroy()
     import student_login
     return
 def run_instructor():
+    win.destroy()
     import teacher_login
     return
 def run_admin():
+    win.destroy
     import admin_login
+
 #=====================Title===============================
 F1= Frame(win,bg=backcolour,relief="solid",border="2")
 F1.pack(fill="x",pady=10,padx=2)
 a= Label(F1,text="ABC INSTITUTE OF TECHNOLOGY ",font=("timesnewroman",20,"bold"),fg=front,bg=backcolour,justify=CENTER)
 a.pack(padx=10,pady=10)
+#Back=Button(win,text="X",font=style,command=back_command,background="black",fg="white")
+#Back.place(x=0,y=0,height=50,width=50)
 #====================Login background======================
 F2= LabelFrame(win,text="Login as",bg=backcolour2,relief="solid",border="2",fg=front,labelanchor="n",font=style,padx=2)
 F2.place(x=0,y=80,relwidth=1,height=350)

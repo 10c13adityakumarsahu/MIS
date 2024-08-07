@@ -4,7 +4,7 @@ import mysql.connector
 from tkinter import messagebox as tmsg
 #=====================Initialization======================
 Win=Tk()
-Win.title("Student Login")
+Win.title("Administrator Login")
 Win.geometry("500x500")
 Win.resizable(False,False)
 backcolour="#DA627D"
@@ -23,6 +23,10 @@ mydb = mysql.connector.connect(
 mycursor = mydb.cursor()
 #======================Captcha===========================
 captcha=random.randint(10000,99999)
+def admin_console():
+    Win.destroy()
+    import admin_console
+    
 def generate_new_captcha():
     global captcha
     captcha1=random.randint(10000,99999)
@@ -48,11 +52,13 @@ def checkpassword():
         generate_new_captcha()
         return
     for x in passkey:
-        print(x)
+        #print(x)
         if len(x)==0:
             tmsg.showerror("Warning","Incorrect Credentials")
         elif x[2]==b:
             tmsg.showinfo("Login",f"Login Successful {x[1]}")
+            syslog(x[0])
+            admin_console()
         else:
             tmsg.showerror("Warning","Incorrect Credentials")
     
@@ -68,12 +74,18 @@ def reload_window():
     if len(F11.get())!=:
         tmsg.showerror("Error","Error Captcha")
         reload_window()'''
+#=====================================================
+def back_command():
+    Win.destroy()
+    import admin
 
 #====================Environment=======================
-F3=Label(Win,text="Administrator Login",font=style,background=backcolour2,foreground=front,border="2",padx=1)
-F3.place(x=0,y=0,relwidth=1,height=30)
+F3=Label(Win,text="Administrator Login",font=style,background="black",foreground="white",border="2",padx=1,relief=GROOVE)
+F3.place(x=0,y=0,relwidth=1,height=50)
+Back=Button(Win,text="<",font=style,command=back_command,background="black",fg="white")
+Back.place(x=0,y=0,height=50,width=50)
 F4=Frame(Win,background=backcolour,padx=17)
-F4.place(x=0,y=37,relwidth=1,relheight=0.9)
+F4.place(x=0,y=55,relwidth=1,relheight=0.9)
 F5=Label(F4,text="Administrator ID:",font=style,background=backcolour,foreground=front,anchor="nw",width=13,border="2")
 F5.grid(row=0,column=0,pady=2)
 F6=Label(F4,text="Password:",font=style,background=backcolour,foreground=front,anchor="nw",width=13,border="2")
@@ -94,5 +106,9 @@ Reset.grid(row=5,column=0,pady=10)
 Submit=Button(F4,text="Login",font=("timesnewroman",10,"bold"),width=27,command=checkpassword,height=2)
 Submit.grid(row=5,column=1,pady=10)
 Copy.pack(fill=X,anchor="s",side="bottom")
+#============take forward===========================
+def syslog(a):
+    user=a
+    print(user)
 Win.bind('<Escape>',quit)
 Win.mainloop()
