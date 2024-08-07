@@ -19,15 +19,15 @@ def back_command():
 def run_student():
     win.destroy()
     import student_login
-    return
+    
 def run_instructor():
     win.destroy()
     import teacher_login
-    return
+    
 def run_admin():
-    win.destroy
+    win.destroy()
     import admin_login
-
+    
 #=====================Title===============================
 F1= Frame(win,bg=backcolour,relief="solid",border="2")
 F1.pack(fill="x",pady=10,padx=2)
