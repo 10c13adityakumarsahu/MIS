@@ -15,6 +15,7 @@ style1=("Calibri", 20, "italic")
 style2=("Calibri", 15, "italic")
 style3=("Calibri", 25, "italic")
 front="white"
+B="#d0d9d9"
 backcolour2="black"
 Buttoncolor="#7A2048"
 buttontxt="white"
@@ -61,31 +62,80 @@ def sql_commands(a,b="select"):
             reset()
     if b=="revoke":
         try:
-            val = Val1_input.get()
-            sql = f"update {tab} set access=0 where Registration={val}"
-            mycursor.execute(sql)
-            mydb.commit()
-            mycursor.execute(f"Select * from {tab}")
-            passkey=mycursor.fetchall()
-            #for x in passkey:
-                #print(x)
-            reset()
-            tmsg.showinfo("Success","Acess Denied")
+            if tab=="students":
+                val = Val1_input.get()
+                sql = f"update {tab} set access=0 where registration={val}"
+                mycursor.execute(sql)
+                mydb.commit()
+                mycursor.execute(f"Select * from {tab}")
+                passkey=mycursor.fetchall()
+                #for x in passkey:
+                    #print(x)
+                reset()
+                tmsg.showinfo("Success","Acess Denied")
+            elif tab=="instructor":
+                vall=(Val1_input.get())
+                sql = f"update {tab} set access=0 where Emp_id={vall}"
+                mycursor.execute(sql)
+                mydb.commit()
+                mycursor.execute(f"Select * from {tab}")
+                passkey=mycursor.fetchall()
+                #for x in passkey:
+                    #print(x)
+                tmsg.showinfo("Success","User Data Updated")
+                reset()
+            else:
+                vall=(Val1_input.get())
+                sql = f"update {tab} set access=0 where admin_id={vall}"
+                mycursor.execute(sql)
+                mydb.commit()
+                mycursor.execute(f"Select * from {tab}")
+                passkey=mycursor.fetchall()
+                #for x in passkey:
+                    #print(x)
+                tmsg.showinfo("Success","User Data Updated")
+                reset()
         except:
+            tmsg.showerror("Error","Unable To Update Access")
             reset()
     if b=="access":
         try:
-            val = Val1_input.get()
-            sql = f"update {tab} set access=1 where Registration={val}"
-            mycursor.execute(sql)
-            mydb.commit()
-            mycursor.execute(f"Select * from {tab}")
-            passkey=mycursor.fetchall()
-            #for x in passkey:
-                #print(x)
-            reset()
-            tmsg.showinfo("Success","Access Granted")
+            if tab=="students":
+                vall=(Val1_input.get())
+                sql = f"update {tab} set access=1 where Registration={vall}"
+                mycursor.execute(sql)
+                mydb.commit()
+                mycursor.execute(f"Select * from {tab}")
+                passkey=mycursor.fetchall()
+                #for x in passkey:
+                    #print(x)
+                tmsg.showinfo("Success","User Data Updated")
+                reset()
+            elif tab=="instructor":
+                vall=(Val1_input.get())
+                sql = f"update {tab} set access=1 where Emp_id={vall}"
+                mycursor.execute(sql)
+                mydb.commit()
+                mycursor.execute(f"Select * from {tab}")
+                passkey=mycursor.fetchall()
+                #for x in passkey:
+                    #print(x)
+                tmsg.showinfo("Success","User Data Updated")
+                reset()
+            else:
+                vall=(Val1_input.get())
+                sql = f"update {tab} set access=1 where admin_id={vall}"
+                mycursor.execute(sql)
+                mydb.commit()
+                mycursor.execute(f"Select * from {tab}")
+                passkey=mycursor.fetchall()
+                #for x in passkey:
+                    #print(x)
+                tmsg.showinfo("Success","User Data Updated")
+                reset()
+
         except:
+            tmsg.showerror("Error","Unable To Update Access")
             reset()
     if b=="delete":
         try:
@@ -103,17 +153,43 @@ def sql_commands(a,b="select"):
             reset()
     if b=="update":
         try:
-            vall=(Val2_input.get(),Val3_input.get(),Val1_input.get())
-            sql = f"update {tab} set name=%s,password=%s where Registration=%s"
-            mycursor.execute(sql)
-            mydb.commit()
-            mycursor.execute(f"Select * from {tab}")
-            passkey=mycursor.fetchall()
-            #for x in passkey:
-                #print(x)
-            reset()
-            tmsg.showinfo("Success","User Data Updated")
-            reset()
+            if tab=="students":
+                vall=(Val2_input.get(),Val3_input.get(),Val1_input.get())
+                sql = f"update {tab} set name=%s,password=%s where Registration=%s"
+                mycursor.execute(sql,vall)
+                mydb.commit()
+                mycursor.execute(f"Select * from {tab}")
+                passkey=mycursor.fetchall()
+                #for x in passkey:
+                    #print(x)
+                reset()
+                tmsg.showinfo("Success","User Data Updated")
+                reset()
+            elif tab=="instructor":
+                vall=(Val2_input.get(),Val3_input.get(),Val1_input.get())
+                sql = f"update {tab} set name=%s,password=%s where Emp_id=%s"
+                mycursor.execute(sql,vall)
+                mydb.commit()
+                mycursor.execute(f"Select * from {tab}")
+                passkey=mycursor.fetchall()
+                #for x in passkey:
+                    #print(x)
+                reset()
+                tmsg.showinfo("Success","User Data Updated")
+                reset()
+            else:
+                vall=(Val2_input.get(),Val3_input.get(),Val1_input.get())
+                sql = f"update {tab} set name=%s,password=%s where Emp_id=%s"
+                mycursor.execute(sql,vall)
+                mydb.commit()
+                mycursor.execute(f"Select * from {tab}")
+                passkey=mycursor.fetchall()
+                #for x in passkey:
+                    #print(x)
+                reset()
+                tmsg.showinfo("Success","User Data Updated")
+                reset()
+
         except:
             reset()
     if b=="data":
@@ -197,6 +273,13 @@ def reset_1():
     t1.config(state="normal")
     t1.delete(1.0,END)
 
+def generate_cert():
+    import generate_certificate
+    
+    
+    
+
+
 #===============================================================
 Admin_Label=Label(Win,text="Administrator Panel",background=backcolour2,fg=front,font=style,relief=GROOVE)
 Admin_Label.place(x=0,y=0,relwidth=1,height=50)
@@ -252,11 +335,43 @@ ValF2_1=Button(F2,text="Fetch all data",background=Buttoncolor,fg="white",font=s
 ValF2_1.place(x=50,y=260)
 ValF2_2=Button(F2,text="Reset",background=Buttoncolor,fg="white",font=style,activebackground=backcolour,width=15,command=reset_1)
 ValF2_2.place(x=400,y=260)
-
-
-
+F3=LabelFrame(Win,text="Action Pane",labelanchor="n",font=style)
+F3.place(x=800,y=460,relheight=0.43,relwidth=0.47)
+Actp=Button(F3,text="Get Complete Student Details",height=3,width=30)
+Actp.grid(row=0,column=0,padx=4,pady=4)
+Actp1=Button(F3,text="Get Student Fees Details",height=3,width=30)
+Actp1.grid(row=1,column=0,padx=4,pady=4)
+Actp2=Button(F3,text="See Complete Student Document",height=3,width=30)
+Actp2.grid(row=2,column=0,padx=4,pady=4)
+Actp3=Button(F3,text="Make new Admission",height=3,width=30)
+Actp3.grid(row=3,column=0,padx=4,pady=4)
+Actp4=Button(F3,text="Transfer Student",height=3,width=30)
+Actp4.grid(row=4,column=0,padx=4,pady=4)
+#============================================================#
+EActp=Button(F3,text="Get Complete Employee Details",height=3,width=30)
+EActp.grid(row=0,column=1,padx=4,pady=4)
+EActp1=Button(F3,text="Get Employee Salary Details",height=3,width=30)
+EActp1.grid(row=1,column=1,padx=4,pady=4)
+EActp2=Button(F3,text="See Employee Document",height=3,width=30)
+EActp2.grid(row=2,column=1,padx=4,pady=4)
+EActp3=Button(F3,text="Take Onboard",height=3,width=30)
+EActp3.grid(row=3,column=1,padx=4,pady=4)
+EActp4=Button(F3,text="Relief Instructor",height=3,width=30)
+EActp4.grid(row=4,column=1,padx=4,pady=4)
+#================================================================
+EActp=Button(F3,text="Send Promotional Emails",height=3,width=30)
+EActp.grid(row=0,column=2,padx=4,pady=4)
+EActp1=Button(F3,text="Generate Certificates",height=3,width=30,command=generate_cert)
+EActp1.grid(row=1,column=2,padx=4,pady=4)
+EActp2=Button(F3,text="Generate Grade Cards",height=3,width=30)
+EActp2.grid(row=2,column=2,padx=4,pady=4)
+EActp3=Button(F3,text="Check Student Attendence",height=3,width=30)
+EActp3.grid(row=3,column=2,padx=4,pady=4)
+EActp4=Button(F3,text="Instructor Attendence",height=3,width=30)
+EActp4.grid(row=4,column=2,padx=4,pady=4)
 Copy=Label(Win,text="COPYRIGHTS ABC INSTITUTE OF TECHNOLOGY",font=("timesnewroman",10,"bold"),border=2,relief="raise")
 Copy.pack(fill=X,anchor="s",side="bottom")
+
 
 #===================Closing Attributes==========================
 Win.attributes("-fullscreen",True)

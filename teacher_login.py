@@ -54,6 +54,8 @@ def checkpassword():
         print(x)
         if len(x)==0:
             tmsg.showerror("Warning","Incorrect Credentials")
+        elif x[3]==0:
+            tmsg.showerror("Warning","Access Denied!\nContact Administartor")
         elif x[2]==b:
             tmsg.showinfo("Login",f"Login Successful {x[1]}")
         else:

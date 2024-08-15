@@ -1,0 +1,43 @@
+
+ABC INSTITUTE OF TECHNOLOGY
+1	Name of the Pupil (IN BLOCK LETTERS):	
+2	Mother's Name:	
+3	Father's/Guardian's Name:	
+4	Date of Birth:	
+5	Proof of Date of Birth submitted at the time of admission	
+6	Nationality/Religion	
+7	Whether the candidate belongs to Schedule Caste or
+	Schedule Tribe or OBC	
+8	Date of First Admission in the school with class	
+9	Class in which the pupil last studied (in figures)	
+	(in words)	
+10	School/Board Annual examination last taken with result	
+11	Whether failed , if so once /twice in the same class	
+12	Subjects studied	
+
+
+13	Whether qualified for promotion to the higher class
+	If so , to which class 	(in fig)   (in words) 
+14	Total No.of working days	
+15	Total No.of working days present	
+16	Month upto which the (pupil has paid)	
+	school dues paid	
+17	Any fee concession availed of :
+18	Whether NCC  Cadet / Boy Scout / Girl Guide	
+	(details may be given)	
+19	Whether school is under Govt./Minority/Independent	
+	Category	
+20	Games played or extra-curricular activities in which the	
+	pupil usually took part (mention achievement level  therein)	
+21	General Conduct	
+22	Date of application for certificate	
+23	Date on which pupil's name was struck off the rolls	
+	of the school	
+24	Date of issue of certificate	
+25	Any other remarks	
+
+I hereby declare that the above information including Name of the Candidate, Father's Name , Mother's Name and Date of Birth furnished above is correct as per school records. 
+
+Date :                                                                                                                     
+
+Signature of the Principal 
