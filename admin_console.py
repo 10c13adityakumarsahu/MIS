@@ -281,34 +281,60 @@ def reset_1():
 def generate_cert():
     import generate_certificate
 
-admno=[]
-def generate_Admission_no():
+def generate_Admission_no(b,c,d,e,f,g,h,i,j,k):
     global scs
+    b1=b
+    c=c
+    d=d
+    e=e
+    f=f
+    g=g
+    h=h
+    i=i
+    j=j
+    k=k
+    mydb = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="Aditya@1234",
+    database="New_Entry")
+    mycursor = mydb.cursor()
+    mycursor.execute(f"Select Registration from student_entry")
+    passkey=mycursor.fetchall()
     scs=random.randint(100000,1000000)
-    if scs in admno:
+    if scs in passkey:
         generate_Admission_no()
         #print(scs)
     else:
-        admno.append(scs)
-        print(scs)
-        print(admno)
+        make_admission(a=scs,b=b1,c=c,d=d,e=e,f=f,g=g,h=h,i=i,j=j,k=k)
 def upload_file():
-    file_path = filedialog.askopenfilename(filetypes=("pdf","jpg","jpeg"))
+    file_path = filedialog.askopenfilename(defaultextension="C:/Users/Adity/Downloads/")
     if file_path:
         # Process the file (e.g., save it to a new location)
         save_file(file_path)
 def save_file(file_path):
-    save_path = filedialog.asksaveasfilename()
+    save_path = filedialog.asksaveasfilename(defaultextension="C:/Users/Adity/Desktop/mis/Certificates_uploaded/")
     if save_path:
         with open(file_path, "rb") as f:
             data = f.read()
         with open(save_path, "wb") as f:
             f.write(data)
+def complete_Admission(a,b,c,d,e,f,g,h,i,j,k):
+    generate_Admission_no()
+    mydb = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="Aditya@1234",
+    database="New_Entry")
+    mycursor = mydb.cursor()
+    mycursor.execute(f"Insert into student_entry values {a},{b},{c},{d},{e},{f},{g},{h},{i},{j},{k}")
+    tmsg.showinfo("Admission",f"Admission Done! \n Registration number is : {a}")
 def make_admission():
     Admission=Toplevel(Win)
-    Admission.geometry("600x600")
+    Admission.geometry("800x800")
+    Admission.state("zoomed")
     Admission.maxsize(800,800)
-    Admission.minsize(600,640)
+    Admission.minsize(800,800)
     Admission.title("New Admission")
     #generate_Admission_no()
     #print(scs)
@@ -367,17 +393,21 @@ def make_admission():
     ad12a.grid(row=9,column=1,padx=10)
     ad13a=Entry(ad2,textvariable=StringVar,width=13,bg="white",font=style3)
     ad13a.grid(row=10,column=1,padx=10)
-    ad15=Label(ad2,text="Upload Document")
+    ad15=Label(ad2,text="Upload Document",width=20,anchor="w",bg=backcolour4,font=style3)
     ad15.grid(row=11,column=0,pady=4)
-    ad16b=Button(ad2,text="Upload Aadhar",command=upload_file)
-    ad16b.grid(row=12,column=0,pady=3)
-    ad16b=Button(ad2,text="Upload Migration",command=upload_file)
-    ad16b.grid(row=12,column=1,pady=3)
+    ad16b=Button(ad2,text="Upload Aadhar",command=upload_file,anchor="w",width=15,font=style2)
+    ad16b.grid(row=11,column=1,pady=3)
+    ad16b=Button(ad2,text="Upload Migration",command=upload_file,anchor="w",width=15,font=style2)
+    ad16b.grid(row=11,column=2,pady=3)
+    ad16c=Button(ad2,text="Upload Rank Card",command=upload_file,anchor="w",width=15,font=style2)
+    ad16c.grid(row=12,column=1,pady=3)
+    ad16d=Button(ad2,text="Upload TC",command=upload_file,anchor="w",width=15,font=style2)
+    ad16d.grid(row=12,column=2,pady=3)
     vary=StringVar()
     #TC,Aadhar,Migration,Rankcard
     #ad16a=Checkbutton(ad2,text="Aadhar",background=backcolour,fg="black",font=style2,activebackground=backcolour3,variable=vary,onvalue="NA",offvalue="Aadhar",command=filedialog.askopenfile(mode="r"))
     #ad16a.grid(row=12,column=0)
-    ad14=Button(ad2,text="Submit and Generate Registration Number",bg="red",fg="white")
+    ad14=Button(ad2,text="Submit and Generate Registration Number",bg="red",fg="white",command=generate_Admission_no(b=ad3a.get(),c=ad4a.bell(),d=ad5a.get(),e=ad6a.get(),f=ad7a.get(),g=ad8a.get(),h=str(cal.get_date()),i=ad10a.get(),j=ad11a.get(),k=ad12a.get()))
     ad14.grid(row=15,column=0,pady=2)
     Admission.bind('<Escape>',quit)
 
