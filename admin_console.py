@@ -7,6 +7,7 @@ from tkinter import messagebox as tmsg
 from PIL import ImageTk, Image
 from tkinter import filedialog
 from tkcalendar import Calendar,DateEntry
+from tkPDFViewer import tkPDFViewer as pdf
 #=========================Initialization=======================
 Win=Tk()
 Win.title("Adminisatrator Access")
@@ -211,11 +212,6 @@ def sql_commands(a,b="select"):
             t1.config(state="disabled")
         except:
             tmsg.showerror("Error","unable to fetch Data")
-    
-
-
-    
-
 
 var=StringVar()
 var1=IntVar()
@@ -281,7 +277,7 @@ def reset_1():
 def generate_cert():
     import generate_certificate
 
-def generate_Admission_no(b,c,d,e,f,g,h,i,j,k):
+def generate_Admission_no(b,c,d,e,f,g,h,i,j,k,l):
     global scs
     b1=b
     c=c
@@ -293,41 +289,39 @@ def generate_Admission_no(b,c,d,e,f,g,h,i,j,k):
     i=i
     j=j
     k=k
-    mydb = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="Aditya@1234",
-    database="New_Entry")
-    mycursor = mydb.cursor()
-    mycursor.execute(f"Select Registration from student_entry")
-    passkey=mycursor.fetchall()
+    l=l
     scs=random.randint(100000,1000000)
-    if scs in passkey:
-        generate_Admission_no()
-        #print(scs)
-    else:
-        make_admission(a=scs,b=b1,c=c,d=d,e=e,f=f,g=g,h=h,i=i,j=j,k=k)
+    complete_Admission(a=int(scs),b=b1,c=c,d=d,e=e,f=f,g=g,h=h,i=i,j=j,k=k,l=l)
+def open_image():
+    file_path = filedialog.askopenfilename(filetypes=[("Image Files", "*.png *.jpg *.jpeg")])
+    if file_path:
+        xwin=Toplevel(Win)
+        img = Image.open(file_path)
+        img = img.resize((300, 300), Image.LANCZOS) # Resize image if needed
+        img = ImageTk.PhotoImage(img)
+        label = Label(xwin, image=img)
+        label.image = img # Keep reference to avoid garbage collection
+        label.pack()
 def upload_file():
-    file_path = filedialog.askopenfilename(defaultextension="C:/Users/Adity/Downloads/")
+    file_path = filedialog.askopenfilename(defaultextension="C:/Users/Adity/Downloads/",filetypes=[("Image Files", "*.png *.jpg *.jpeg")])
     if file_path:
         # Process the file (e.g., save it to a new location)
         save_file(file_path)
 def save_file(file_path):
-    save_path = filedialog.asksaveasfilename(defaultextension="C:/Users/Adity/Desktop/mis/Certificates_uploaded/")
+    save_path = filedialog.asksaveasfilename(defaultextension="C:/Users/Adity/Desktop/mis/Certificates_uploaded",filetypes=[("Image Files", "*.png *.jpg *.jpeg")])
     if save_path:
         with open(file_path, "rb") as f:
             data = f.read()
         with open(save_path, "wb") as f:
             f.write(data)
-def complete_Admission(a,b,c,d,e,f,g,h,i,j,k):
-    generate_Admission_no()
+def complete_Admission(a,b,c,d,e,f,g,h,i,j,k,l):
     mydb = mysql.connector.connect(
     host="localhost",
     user="root",
     password="Aditya@1234",
     database="New_Entry")
     mycursor = mydb.cursor()
-    mycursor.execute(f"Insert into student_entry values {a},{b},{c},{d},{e},{f},{g},{h},{i},{j},{k}")
+    mycursor.execute(f"Insert into student_entry (Registration,Gender,Admission_Branch,Category,Mother,father,DOB,MTounge,Resadd,peradd,CRL) values ({a},{b},{c},{d},{e},{f},{g},{h},{i},{j},{k},{l})")
     tmsg.showinfo("Admission",f"Admission Done! \n Registration number is : {a}")
 def make_admission():
     Admission=Toplevel(Win)
@@ -407,17 +401,19 @@ def make_admission():
     #TC,Aadhar,Migration,Rankcard
     #ad16a=Checkbutton(ad2,text="Aadhar",background=backcolour,fg="black",font=style2,activebackground=backcolour3,variable=vary,onvalue="NA",offvalue="Aadhar",command=filedialog.askopenfile(mode="r"))
     #ad16a.grid(row=12,column=0)
-    ad14=Button(ad2,text="Submit and Generate Registration Number",bg="red",fg="white",command=generate_Admission_no(b=ad3a.get(),c=ad4a.bell(),d=ad5a.get(),e=ad6a.get(),f=ad7a.get(),g=ad8a.get(),h=str(cal.get_date()),i=ad10a.get(),j=ad11a.get(),k=ad12a.get()))
-    ad14.grid(row=15,column=0,pady=2)
+    d1=ad3a.get()
+    d2=ad4v.get()
+    d3=ad5v.get()
+    d4=ad6v.get()
+    d5=ad7a.get()
+    d6=ad8a.get()
+    d7=str(sel.get())
+    d8=ad10a.get()
+    d9=ad11a.get()
+    d10=ad12a.get()
+    d11=ad13a.get()
+    ad14=Button(ad2,text="Submit and Generate Registration Number",bg="red",fg="white",command=generate_Admission_no(b=d1,c=d2,d=d3,e=d4,f=d5,g=d6,h=d7,i=d8,j=d9,k=d10,l=d11))
     Admission.bind('<Escape>',quit)
-
-    
-    
-    
-    
-    
-
-
 #===============================================================
 Admin_Label=Label(Win,text="Administrator Panel",background=backcolour2,fg=front,font=style,relief=GROOVE)
 Admin_Label.place(x=0,y=0,relwidth=1,height=50)
@@ -479,7 +475,7 @@ Actp=Button(F3,text="Get Complete Student Details",height=3,width=30)
 Actp.grid(row=0,column=0,padx=4,pady=4)
 Actp1=Button(F3,text="Get Student Fees Details",height=3,width=30)
 Actp1.grid(row=1,column=0,padx=4,pady=4)
-Actp2=Button(F3,text="See Complete Student Document",height=3,width=30)
+Actp2=Button(F3,text="See Complete Student Document",height=3,width=30,command=open_image)
 Actp2.grid(row=2,column=0,padx=4,pady=4)
 Actp3=Button(F3,text="Make new Admission",height=3,width=30,command=make_admission)
 Actp3.grid(row=3,column=0,padx=4,pady=4)
@@ -509,8 +505,6 @@ EActp4=Button(F3,text="Instructor Attendence",height=3,width=30)
 EActp4.grid(row=4,column=2,padx=4,pady=4)
 Copy=Label(Win,text="COPYRIGHTS ABC INSTITUTE OF TECHNOLOGY",font=("timesnewroman",10,"bold"),border=2,relief="raise")
 Copy.pack(fill=X,anchor="s",side="bottom")
-
-
 #===================Closing Attributes==========================
 Win.attributes("-fullscreen",True)
 Win.bind('<Escape>',quit)
