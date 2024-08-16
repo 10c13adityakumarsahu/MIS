@@ -5,6 +5,8 @@ import mysql.connector
 from tkinter import messagebox as tmsg
 #from admin_login import syslog 
 from PIL import ImageTk, Image
+from tkinter import filedialog
+from tkcalendar import Calendar,DateEntry
 #=========================Initialization=======================
 Win=Tk()
 Win.title("Adminisatrator Access")
@@ -20,6 +22,8 @@ backcolour2="black"
 Buttoncolor="#7A2048"
 buttontxt="white"
 backcolour="#408EC6"
+backcolour4="#4a9ad4"
+
 l1=[]
 #===========Admin User id===================================
 def selected(a,b="sec"):
@@ -215,6 +219,7 @@ def sql_commands(a,b="select"):
 
 var=StringVar()
 var1=IntVar()
+varx=StringVar()
 #============Captcha=========================================
 def back_command():
     if tmsg.askyesno("Back","Do you want to go back \n unsaved changes will not reflect")==True:
@@ -275,6 +280,109 @@ def reset_1():
 
 def generate_cert():
     import generate_certificate
+
+admno=[]
+def generate_Admission_no():
+    global scs
+    scs=random.randint(100000,1000000)
+    if scs in admno:
+        generate_Admission_no()
+        #print(scs)
+    else:
+        admno.append(scs)
+        print(scs)
+        print(admno)
+def upload_file():
+    file_path = filedialog.askopenfilename(filetypes=("pdf","jpg","jpeg"))
+    if file_path:
+        # Process the file (e.g., save it to a new location)
+        save_file(file_path)
+def save_file(file_path):
+    save_path = filedialog.asksaveasfilename()
+    if save_path:
+        with open(file_path, "rb") as f:
+            data = f.read()
+        with open(save_path, "wb") as f:
+            f.write(data)
+def make_admission():
+    Admission=Toplevel(Win)
+    Admission.geometry("600x600")
+    Admission.maxsize(800,800)
+    Admission.minsize(600,640)
+    Admission.title("New Admission")
+    #generate_Admission_no()
+    #print(scs)
+    ad1=Label(Admission,text="New Admission",background="black",fg="white",font=style)
+    ad1.place(relx=0,rely=0,relwidth=1,relheight=0.09)
+    ad2=Frame(Admission,bg=backcolour)
+    ad2.place(rely=0.1,relx=0,relwidth=1,relheight=0.9)
+    ad3=Label(ad2,text="Name",width=20,anchor="w",bg=backcolour4,font=style3)
+    ad3.grid(row=0,column=0,pady=2,padx=2)
+    ad4=Label(ad2,text="Gender",width=20,anchor="w",bg=backcolour4,font=style3)
+    ad4.grid(row=1,column=0,pady=2,padx=2)
+    ad5=Label(ad2,text="Admission Branch",width=20,anchor="w",bg=backcolour4,font=style3)
+    ad5.grid(row=2,column=0,pady=2,padx=2)
+    ad6=Label(ad2,text="Category",width=20,anchor="w",bg=backcolour4,font=style3)
+    ad6.grid(row=3,column=0,pady=2,padx=2)
+    ad7=Label(ad2,text="Mother's Name",width=20,anchor="w",bg=backcolour4,font=style3)
+    ad7.grid(row=4,column=0,pady=2,padx=2)
+    ad8=Label(ad2,text="Father's Name",width=20,anchor="w",bg=backcolour4,font=style3)
+    ad8.grid(row=5,column=0,pady=2,padx=2)
+    ad9=Label(ad2,text="Date Of Birth",width=20,anchor="w",bg=backcolour4,font=style3)
+    ad9.grid(row=6,column=0,pady=2,padx=2)
+    ad10=Label(ad2,text="Mother Tounge",width=20,anchor="w",bg=backcolour4,font=style3)
+    ad10.grid(row=7,column=0,pady=2,padx=2)
+    ad11=Label(ad2,text="Residencial Address",width=20,anchor="w",bg=backcolour4,font=style3)
+    ad11.grid(row=8,column=0,pady=2,padx=2)
+    ad11=Label(ad2,text="Permenant Address",width=20,anchor="w",bg=backcolour4,font=style3)
+    ad11.grid(row=9,column=0,pady=2,padx=2)
+    ad12=Label(ad2,text="Common Rank",width=20,anchor="w",bg=backcolour4,font=style3)
+    ad12.grid(row=10,column=0,pady=2,padx=2)
+    ad3a=Entry(ad2,textvariable=StringVar,width=13,bg="white",font=style3)
+    ad3a.grid(row=0,column=1,padx=10)
+    ad4v=StringVar()
+    ad4a=OptionMenu(ad2,ad4v,"Male","Female")
+    ad4v.set("Select")
+    ad4a.grid(row=1,column=1)
+    ad5v=StringVar()
+    ad5a=OptionMenu(ad2,ad5v,"Computer Science","Information Technology","Civil Engineering","Mechanical Engineering","Chemical Engineering","Artificial Intelligence","Electronics and Communication","Mining Engineering")
+    ad5a.grid(row=2,column=1)
+    ad5v.set("Select")
+    ad6v=StringVar()
+    ad6a=OptionMenu(ad2,ad6v,"Select","General","OBC(NCL)","SC","ST","PWD")
+    ad6a.grid(row=3,column=1)
+    ad6v.set("Select")
+    ad7a=Entry(ad2,textvariable=StringVar,width=13,bg="white",font=style3)
+    ad7a.grid(row=4,column=1,padx=10)
+    ad8a=Entry(ad2,textvariable=StringVar,width=13,bg="white",font=style3)
+    ad8a.grid(row=5,column=1,padx=10)
+    sel=StringVar() # declaring string variable 
+    cal=DateEntry(ad2,selectmode='day',textvariable=sel)
+    cal.grid(row=6,column=1,padx=20)
+    ad10a=Entry(ad2,textvariable=StringVar,width=13,bg="white",font=style3)
+    ad10a.grid(row=7,column=1,padx=10)
+    ad11a=Entry(ad2,textvariable=StringVar,width=13,bg="white",font=style3)
+    ad11a.grid(row=8,column=1,padx=10)
+    ad12a=Entry(ad2,textvariable=StringVar,width=13,bg="white",font=style3)
+    ad12a.grid(row=9,column=1,padx=10)
+    ad13a=Entry(ad2,textvariable=StringVar,width=13,bg="white",font=style3)
+    ad13a.grid(row=10,column=1,padx=10)
+    ad15=Label(ad2,text="Upload Document")
+    ad15.grid(row=11,column=0,pady=4)
+    ad16b=Button(ad2,text="Upload Aadhar",command=upload_file)
+    ad16b.grid(row=12,column=0,pady=3)
+    ad16b=Button(ad2,text="Upload Migration",command=upload_file)
+    ad16b.grid(row=12,column=1,pady=3)
+    vary=StringVar()
+    #TC,Aadhar,Migration,Rankcard
+    #ad16a=Checkbutton(ad2,text="Aadhar",background=backcolour,fg="black",font=style2,activebackground=backcolour3,variable=vary,onvalue="NA",offvalue="Aadhar",command=filedialog.askopenfile(mode="r"))
+    #ad16a.grid(row=12,column=0)
+    ad14=Button(ad2,text="Submit and Generate Registration Number",bg="red",fg="white")
+    ad14.grid(row=15,column=0,pady=2)
+    Admission.bind('<Escape>',quit)
+
+    
+    
     
     
     
@@ -289,9 +397,9 @@ F1=LabelFrame(Win,text="Client MIS Portal",bg=backcolour,font=style,labelanchor=
 F1.place(x=2,y=55,relwidth=1,height=400)
 Type=Radiobutton(F1,text="Student",font=style,background=backcolour,activebackground=backcolour,value="Student",variable=var,command=selected(var.get()),state="active")
 Type.grid(row=0,column=0)
-Type1=Radiobutton(F1,text="Instructor",font=style,background=backcolour,activebackground=backcolour3,variable=var,value="Instructor",command=selected(var.get()))
+Type1=Radiobutton(F1,text="Instructor",font=style,background=backcolour,activebackground=backcolour,variable=var,value="Instructor",command=selected(var.get()))
 Type1.grid(row=0,column=1)
-Type2=Radiobutton(F1,text="Administrator",font=style,background=backcolour,activebackground=backcolour3,variable=var,value="Administrator",command=selected(var.get()))
+Type2=Radiobutton(F1,text="Administrator",font=style,background=backcolour,activebackground=backcolour,variable=var,value="Administrator",command=selected(var.get()))
 Type2.grid(row=0,column=2)
 Val1=Label(F1,text="Registration no:",bg=backcolour,font=style)
 Val1.grid(row=1,column=0)
@@ -343,7 +451,7 @@ Actp1=Button(F3,text="Get Student Fees Details",height=3,width=30)
 Actp1.grid(row=1,column=0,padx=4,pady=4)
 Actp2=Button(F3,text="See Complete Student Document",height=3,width=30)
 Actp2.grid(row=2,column=0,padx=4,pady=4)
-Actp3=Button(F3,text="Make new Admission",height=3,width=30)
+Actp3=Button(F3,text="Make new Admission",height=3,width=30,command=make_admission)
 Actp3.grid(row=3,column=0,padx=4,pady=4)
 Actp4=Button(F3,text="Transfer Student",height=3,width=30)
 Actp4.grid(row=4,column=0,padx=4,pady=4)
