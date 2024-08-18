@@ -9,6 +9,8 @@ from tkinter import filedialog
 from tkcalendar import Calendar,DateEntry
 from tkPDFViewer import tkPDFViewer as pdf
 import os
+import docx
+from docx.shared import Inches
 #=========================Initialization=======================
 Win=Tk()
 Win.title("Adminisatrator Access")
@@ -498,8 +500,11 @@ def make_admission():
     Admission.bind('<Escape>',quit)
 #=============================================================
 def up_onboard_photo():
-    file_path = filedialog.askopenfilename(initialdir='C:/Users/Adity/Downloads',filetypes=[("Image Files", "*.png *.jpg *.jpeg")])
+    global full_path
+    global img
+    file_path = filedialog.askopenfilename(initialdir='C:/Users/Adity/Downloads',filetypes=[("Image Files", "*.png *.jpg *.jpeg")],defaultextension='png')
     if file_path:
+        full_path = os.path.abspath(file_path) 
         img = Image.open(file_path)
         img = img.resize((200, 200), Image.LANCZOS) # Resize image if needed
         img = ImageTk.PhotoImage(img)
@@ -511,9 +516,17 @@ def up_onboard_photo():
   #  if file_path:
    #     os.mkdir()
 def take_ob():
-    x=tmsg.askyesno("Generate","Do you want to generate ID card?")
-    if x==True:
-        pass
+    doc=docx.Document()
+    doc.add_heading("\t\tABC INSTITUTE OF TECHNOLOGY",0)
+    doc.add_picture(full_path,width=Inches(4))
+    doc.add_paragraph(f"Employee ID:{empidi.get()}")
+    doc.add_paragraph(f"Name:{ot2i.get()}")
+    doc.add_paragraph(f"Department:{depx.get()}")
+    doc.add_paragraph(f"Phone No:{ot3i.get()}")
+    doc.add_paragraph(f"Date Of Joining:{Dt.get()}")
+    doc.add_paragraph(f"\t\t\tABC Group Of Institute \n\t\t\t Greater Noida Delhi NCR INDIA")
+    doc.save(f'C:/Users/Adity/Desktop/mis/ID_Inst/{empidi.get()}.docx')
+
 #========================Take Onboard==========================
 def on_board_data():
     valu=(empidi.get(),ot2i.get(),empidi.get(),0,ot5i.get(),str(ot3i.get()),ot4i.get(),ot6i.get(),ot7i.get(),depx.get(),qx.get(),sali.get(),str(Dt.get_date()),"null",anci.get())
@@ -528,7 +541,12 @@ def on_board_data():
     mydb.commit()
     mydb.close()
     #"INSERT INTO instructor (Emp_id,name,password,access,age,number,Gender,Email,Address,Dept,HighQ,salary,DOJ,DOE,AC_no) VALUES
-    tmsg.showinfo(f"Success","On board Complete Your \n ID: {a}\n Password:{a}")
+    tmsg.showinfo("Success",f"On board Complete Your \n ID: {empidi.get()}\n Password:{empidi.get()}")
+    x=tmsg.askyesno("ID","Do you wan to generate ID Card?")
+    if x==True:
+        take_ob()
+    else:
+        onb.quit
 
     
 def onboard():
@@ -695,7 +713,7 @@ EActp=Button(F3,text="Send Promotional Emails",height=3,width=30)
 EActp.grid(row=0,column=2,padx=4,pady=4)
 EActp1=Button(F3,text="Generate Certificates",height=3,width=30,command=generate_cert)
 EActp1.grid(row=1,column=2,padx=4,pady=4)
-EActp2=Button(F3,text="Generate Grade Cards",height=3,width=30)
+EActp2=Button(F3,text="Generate ID Cards",height=3,width=30)
 EActp2.grid(row=2,column=2,padx=4,pady=4)
 EActp3=Button(F3,text="Check Student Attendence",height=3,width=30)
 EActp3.grid(row=3,column=2,padx=4,pady=4)
