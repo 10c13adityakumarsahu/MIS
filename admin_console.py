@@ -8,6 +8,7 @@ from PIL import ImageTk, Image
 from tkinter import filedialog
 from tkcalendar import Calendar,DateEntry
 from tkPDFViewer import tkPDFViewer as pdf
+import os
 #=========================Initialization=======================
 Win=Tk()
 Win.title("Adminisatrator Access")
@@ -144,17 +145,42 @@ def sql_commands(a,b="select"):
             reset()
     if b=="delete":
         try:
-            val = Val1_input.get()
-            sql = f"delete from {tab} where Registration={val}"
-            mycursor.execute(sql)
-            mydb.commit()
-            mycursor.execute(f"Select * from {tab}")
-            passkey=mycursor.fetchall()
-            #for i in passkey:
-                #print(i)
-            tmsg.showinfo("Success","User Deleted")
-            reset()
+            if tab=="students":
+                vall=(Val1_input.get())
+                sql = f"delete {tab}  where Registration={vall}"
+                mycursor.execute(sql)
+                mydb.commit()
+                mycursor.execute(f"Select * from {tab}")
+                passkey=mycursor.fetchall()
+                #for x in passkey:
+                    #print(x)
+                tmsg.showinfo("Success","User Deleted")
+                reset()
+            elif tab=="instructor":
+                vall=(Val1_input.get())
+                sql = f"delete from {tab} where Emp_id={vall}"
+                mycursor.execute(sql)
+                mydb.commit()
+                mycursor.execute(f"Select * from {tab}")
+                passkey=mycursor.fetchall()
+                #for x in passkey:
+                    #print(x)
+                tmsg.showinfo("Success","User Deleted")
+                reset()
+            else:
+                vall=(Val1_input.get())
+                sql = f"Delete from {tab} where admin_id={vall}"
+                mycursor.execute(sql)
+                mydb.commit()
+                mycursor.execute(f"Select * from {tab}")
+                passkey=mycursor.fetchall()
+                #for x in passkey:
+                    #print(x)
+                tmsg.showinfo("Success","User Deleted")
+                reset()
+
         except:
+            tmsg.showerror("Error","Unable To Update Access")
             reset()
     if b=="update":
         try:
@@ -199,17 +225,43 @@ def sql_commands(a,b="select"):
             reset()
     if b=="data":
         try:
-            reset_1()
-            mycursor.execute(f"Select * from {tab}")
-            passkey=mycursor.fetchall()
-            t1.config(state="normal")
-            t1.delete(1.0,END)
-            for x in passkey:
-                #print(x)
-                for j in x:
-                    t1.insert(END,f"[{j}]\t")
-                t1.insert(END,f"\n")
-            t1.config(state="disabled")
+            if tab=="students":
+                reset_1()
+                mycursor.execute(f"Select * from {tab}")
+                passkey=mycursor.fetchall()
+                t1.config(state="normal")
+                t1.delete(1.0,END)
+                for x in passkey:
+                    #print(x)
+                    for j in x:
+                        t1.insert(END,f"[{j}]\t")
+                    t1.insert(END,f"\n")
+                t1.config(state="disabled")
+            elif tab=="instructor":
+                reset_1()
+                mycursor.execute(f"Select Emp_id,Name,password,access from {tab}")
+                passkey=mycursor.fetchall()
+                t1.config(state="normal")
+                t1.delete(1.0,END)
+                for x in passkey:
+                    #print(x)
+                    for j in x:
+                        t1.insert(END,f"[{j}]\t")
+                    t1.insert(END,f"\n")
+                t1.config(state="disabled")
+            else:
+                reset_1()
+                mycursor.execute(f"Select * from {tab}")
+                passkey=mycursor.fetchall()
+                t1.config(state="normal")
+                t1.delete(1.0,END)
+                for x in passkey:
+                    #print(x)
+                    for j in x:
+                        t1.insert(END,f"[{j}]\t")
+                    t1.insert(END,f"\n")
+                t1.config(state="disabled")
+
         except:
             tmsg.showerror("Error","unable to fetch Data")
 
@@ -239,7 +291,7 @@ def reset():
     generate_new_captcha()
 def validatior():
     if var1.get()==0:
-            tmsg.showerror("Error","Accept to continue")
+            tmsg.showerror("Error","Accept To Continue")
     if str(captcha)!=Val8_input.get():
             tmsg.showerror("Error Captcha","Wrong Captcha! Retry")
             reset()
@@ -302,18 +354,48 @@ def open_image():
         label = Label(xwin, image=img)
         label.image = img # Keep reference to avoid garbage collection
         label.pack()
+def show_det_inst():
+    mydb = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="Aditya@1234",
+    database="Teacher_info")
+    mycursor = mydb.cursor()
+    detins= Val1_input.get()
+    if detins=='':
+        tmsg.showerror("Error","Unable To Fetch Data")
+        return
+    try:
+        mycursor.execute(f"SELECT * FROM instructor where Emp_id={detins}")
+        passkey = mycursor.fetchall()
+        t1.config(state="normal")
+        t1.delete(1.0,END)
+        m=["Emp_id:","Name:","Password:","Access:","Age:","Number:","Gender:","Email:","Address:","Department:","Qualification:","Salary:","DOJ:","DOE:","A/C No:"]
+        count=0
+        for x in passkey:
+            for y in x:
+        #print(x)
+                t1.insert(END,f"{m[count]}{y}\t")
+                t1.insert(END,f"\n")
+                count+=1
+        t1.config(state="disabled")
+    except:
+        tmsg.showerror("Error","Unable To Fetch Data")
+def show_fees():
+    pass
 def upload_file():
     file_path = filedialog.askopenfilename(defaultextension="C:/Users/Adity/Downloads/",filetypes=[("Image Files", "*.png *.jpg *.jpeg")])
     if file_path:
         # Process the file (e.g., save it to a new location)
         save_file(file_path)
 def save_file(file_path):
-    save_path = filedialog.asksaveasfilename(defaultextension="C:/Users/Adity/Desktop/mis/Certificates_uploaded",filetypes=[("Image Files", "*.png *.jpg *.jpeg")])
+    save_path = filedialog.asksaveasfilename(initialdir="C:/Users/Adity/Desktop/mis/Certificates_uploaded",filetypes=[("Image Files", "*.png *.jpg *.jpeg")])
     if save_path:
         with open(file_path, "rb") as f:
             data = f.read()
         with open(save_path, "wb") as f:
             f.write(data)
+
 def complete_Admission(a,b,c,d,e,f,g,h,i,j,k,l):
     mydb = mysql.connector.connect(
     host="localhost",
@@ -414,6 +496,122 @@ def make_admission():
     d11=ad13a.get()
     ad14=Button(ad2,text="Submit and Generate Registration Number",bg="red",fg="white",command=generate_Admission_no(b=d1,c=d2,d=d3,e=d4,f=d5,g=d6,h=d7,i=d8,j=d9,k=d10,l=d11))
     Admission.bind('<Escape>',quit)
+#=============================================================
+def up_onboard_photo():
+    file_path = filedialog.askopenfilename(initialdir='C:/Users/Adity/Downloads',filetypes=[("Image Files", "*.png *.jpg *.jpeg")])
+    if file_path:
+        img = Image.open(file_path)
+        img = img.resize((200, 200), Image.LANCZOS) # Resize image if needed
+        img = ImageTk.PhotoImage(img)
+        label = Label(onb, image=img)
+        label.image = img # Keep reference to avoid garbage collection
+        label.place(relx=0.7,rely=0.11,relheight=0.25,relwidth=0.25)
+#def upload_file():
+ #   file_path = filedialog.askopenfilename(filetypes=[("Image Files", "*.png *.jpg *.jpeg")])
+  #  if file_path:
+   #     os.mkdir()
+def take_ob():
+    x=tmsg.askyesno("Generate","Do you want to generate ID card?")
+    if x==True:
+        pass
+#========================Take Onboard==========================
+def on_board_data():
+    valu=(empidi.get(),ot2i.get(),empidi.get(),0,ot5i.get(),str(ot3i.get()),ot4i.get(),ot6i.get(),ot7i.get(),depx.get(),qx.get(),sali.get(),str(Dt.get_date()),"null",anci.get())
+    mydb = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="Aditya@1234",
+    database="Teacher_info")
+    mycursor = mydb.cursor()
+    sql = f"INSERT INTO instructor (Emp_id,name,password,access,age,number,Gender,Email,Address,Dept,HighQ,salary,DOJ,DOE,AC_no) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+    mycursor.execute(sql,valu)
+    mydb.commit()
+    mydb.close()
+    #"INSERT INTO instructor (Emp_id,name,password,access,age,number,Gender,Email,Address,Dept,HighQ,salary,DOJ,DOE,AC_no) VALUES
+    tmsg.showinfo(f"Success","On board Complete Your \n ID: {a}\n Password:{a}")
+
+    
+def onboard():
+    global ot2i,ot3i,empidi,ot5i,ot4i,ot6i,ot7i,depx,qx,sali,anci,Dt
+    global onb
+    global imglo
+    onb=Toplevel(Win)
+    onb.title("Onboard Client")
+    onb.geometry("720x480")
+    oF1=Frame(onb,bg="grey")
+    oF1.place(relx=0,rely=0,relwidth=1,relheight=1)
+    ot1=Label(oF1,text="Take Onboard",bg="lightgrey",fg="white",font=style)
+    ot1.place(relx=0,rely=0,relwidth=1,relheight=0.07)
+    ot2=Label(oF1,text="Name:",bg="grey",fg="white",font=style2)
+    ot2.place(relx=0.02,rely=0.09,relheight=0.07,relwidth=0.25)
+    ot3=Label(oF1,text="Number:",bg="grey",fg="white",font=style2)
+    ot3.place(relx=0.02,rely=0.16,relheight=0.07,relwidth=0.25)
+    ot4=Label(oF1,text="Gender(M/F):",bg="grey",fg="white",font=style2)
+    ot4.place(relx=0.02,rely=0.23,relheight=0.07,relwidth=0.25)
+    ot5=Label(oF1,text="Age:",bg="grey",fg="white",font=style2)
+    ot5.place(relx=0.02,rely=0.3,relheight=0.07,relwidth=0.25)
+    ot6=Label(oF1,text="Email:",bg="grey",fg="white",font=style2)
+    ot6.place(relx=0.02,rely=0.37,relheight=0.07,relwidth=0.25)
+    ot7=Label(oF1,text="Address:",bg="grey",fg="white",font=style2)
+    ot7.place(relx=0.02,rely=0.44,relheight=0.14,relwidth=0.25)
+    ot8=Label(oF1,text="Department:",bg="grey",fg="white",font=style2)
+    ot8.place(relx=0.02,rely=0.58,relheight=0.07,relwidth=0.25)
+    ot9=Label(oF1,text="Highest Qualification:",bg="grey",fg="white",font=style2)
+    ot9.place(relx=0.02,rely=0.65,relheight=0.07,relwidth=0.25)
+    ot10=Label(oF1,text="Upload Documents:",bg="grey",fg="white",font=style2)
+    ot10.place(relx=0.02,rely=0.72,relheight=0.07,relwidth=0.25)
+    ot2i=Entry(oF1,textvariable=StringVar(),font=style2)
+    ot2i.place(relx=0.3,rely=0.09,relwidth=0.25,relheight=0.065)
+    ot3i=Entry(oF1,textvariable=IntVar(),font=style2)
+    ot3i.place(relx=0.3,rely=0.16,relwidth=0.25,relheight=0.065)
+    ot4i=Entry(oF1,textvariable=StringVar(),font=style2)
+    ot4i.place(relx=0.3,rely=0.23,relwidth=0.25,relheight=0.065)
+    ot5i=Entry(oF1,textvariable=IntVar(),font=style2)
+    ot5i.place(relx=0.3,rely=0.3,relwidth=0.25,relheight=0.065)
+    ot6i=Entry(oF1,textvariable=StringVar(),font=style2)
+    ot6i.place(relx=0.3,rely=0.37,relwidth=0.25,relheight=0.065)
+    ot7i=Entry(oF1,textvariable=StringVar(),font=style2)
+    ot7i.place(relx=0.3,rely=0.44,relwidth=0.25,relheight=0.130)
+    depx=StringVar()
+    ot8i=OptionMenu(oF1,depx,"Computer Science","Information Technology","Civil Engineering","Mechanical Engineering","Chemical Engineering","Artificial Intelligence","Electronics and Communication","Mining Engineering")
+    depx.set("Select")
+    ot8i.place(relx=0.3,rely=0.58,relwidth=0.25,relheight=0.065)
+    qx=StringVar()
+    ot9i=OptionMenu(oF1,qx,"Graduate","Post Graduate","Doctorate","Post Doctorate")
+    qx.set("Select")
+    ot9i.place(relx=0.3,rely=0.66,relwidth=0.25,relheight=0.065)
+    ot10a=Button(oF1,text="Upload Photo",command=up_onboard_photo)
+    ot10a.place(relx=0.02,rely=0.8,relwidth=0.25,relheight=0.065)
+    ot10b=Button(oF1,text="Upload CV",command=up_onboard_photo)
+    ot10b.place(relx=0.3,rely=0.8,relwidth=0.25,relheight=0.065)
+    ot10c=Button(oF1,text="Upload ID proof",command=up_onboard_photo)
+    ot10c.place(relx=0.02,rely=0.88,relwidth=0.25,relheight=0.065)
+    ot10d=Button(oF1,text="Upload Degree & Experience",command=up_onboard_photo)
+    ot10d.place(relx=0.3,rely=0.88,relwidth=0.25,relheight=0.065)
+    li=PhotoImage(height=20,width=20)
+    imglo=Label(oF1,image=li)
+    otph=Button(oF1,image=li,command=up_onboard_photo,borderwidth=0)
+    otph.place(relx=0.7,rely=0.11,relheight=0.25,relwidth=0.25)  
+    empid=Label(oF1,text="EmployeeId(Customised):",bg="grey",fg="white")
+    empid.place(relx=0.7,rely=0.37,relwidth=0.25,relheight=0.065)
+    empidi=Entry(oF1,textvariable=IntVar(),font=style2)
+    empidi.place(relx=0.7,rely=0.45,relwidth=0.25,relheight=0.065)
+    sal=Label(oF1,text="Salary:",bg="grey",fg="white",font=style2)
+    sal.place(relx=0.7,rely=0.53,relheight=0.065,relwidth=0.25)
+    sali=Entry(oF1,textvariable=IntVar(),font=style2)
+    sali.place(relx=0.7,rely=0.59,relheight=0.065,relwidth=0.25)
+    Dt=DateEntry(onb)
+    Dt.place(relx=0,rely=0)
+    Acn=Label(oF1,text="A/C No:",font=style2,bg="grey",fg="white")
+    Acn.place(relx=0.7,rely=0.66,relheight=0.065,relwidth=0.25)
+    anci=Entry(oF1,textvariable=IntVar(),font=style2)
+    anci.place(relx=0.7,rely=0.73,relheight=0.065,relwidth=0.25)  
+    ph=Label(otph,text="Photograph",fg="grey")
+    ph.place(relx=0.35,rely=0.35)
+    ot11=Button(oF1,text="Take On Board",bg="red",fg="white",command=on_board_data)
+
+    ot11.place(relx=0.02,rely=0.95,relheight=0.05,relwidth=0.53)
+
 #===============================================================
 Admin_Label=Label(Win,text="Administrator Panel",background=backcolour2,fg=front,font=style,relief=GROOVE)
 Admin_Label.place(x=0,y=0,relwidth=1,height=50)
@@ -482,13 +680,13 @@ Actp3.grid(row=3,column=0,padx=4,pady=4)
 Actp4=Button(F3,text="Transfer Student",height=3,width=30)
 Actp4.grid(row=4,column=0,padx=4,pady=4)
 #============================================================#
-EActp=Button(F3,text="Get Complete Employee Details",height=3,width=30)
+EActp=Button(F3,text="Get Complete Employee Details",height=3,width=30,command=show_det_inst)
 EActp.grid(row=0,column=1,padx=4,pady=4)
-EActp1=Button(F3,text="Get Employee Salary Details",height=3,width=30)
+EActp1=Button(F3,text="Pay Employee Salary",height=3,width=30)
 EActp1.grid(row=1,column=1,padx=4,pady=4)
 EActp2=Button(F3,text="See Employee Document",height=3,width=30)
 EActp2.grid(row=2,column=1,padx=4,pady=4)
-EActp3=Button(F3,text="Take Onboard",height=3,width=30)
+EActp3=Button(F3,text="Take Onboard",height=3,width=30,command=onboard)
 EActp3.grid(row=3,column=1,padx=4,pady=4)
 EActp4=Button(F3,text="Relief Instructor",height=3,width=30)
 EActp4.grid(row=4,column=1,padx=4,pady=4)
