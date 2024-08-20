@@ -11,6 +11,10 @@ from tkPDFViewer import tkPDFViewer as pdf
 import os
 import docx
 from docx.shared import Inches
+from multiprocessing import Process, Queue
+import cv2
+from PIL import *
+
 #=========================Initialization=======================
 Win=Tk()
 Win.title("Adminisatrator Access")
@@ -499,6 +503,73 @@ def make_admission():
     ad14=Button(ad2,text="Submit and Generate Registration Number",bg="red",fg="white",command=generate_Admission_no(b=d1,c=d2,d=d3,e=d4,f=d5,g=d6,h=d7,i=d8,j=d9,k=d10,l=d11))
     Admission.bind('<Escape>',quit)
 #=============================================================
+def capture():
+    cam_port=0
+    cam=cv2.VideoCapture(cam_port)
+    width,height=100,100
+    cam.set(cv2.CAP_PROP_FRAME_HEIGHT,height)
+    cam.set(cv2.CAP_PROP_FRAME_WIDTH,width)
+    ret,frame = cam.read()
+    cam.release()
+    if ret:
+        global y
+        cv2.imwrite(f"C:/Users/Adity/Desktop/mis/ID_Photoss/{inpidi.get()}.png",frame)
+        y=f"C:/Users/Adity/Desktop/mis/ID_Photoss/{inpidi.get()}.png"
+        upload_photo(y)
+def upload_photo(photo_path):
+    img = Image.open(photo_path)
+    img = img.resize((200, 200), Image.LANCZOS) # Resize image if needed
+    img = ImageTk.PhotoImage(img)
+    label = Label(idg, image=img)
+    label.image = img # Keep reference to avoid garbage collection
+    label.place(relx=0.02,rely=0.28,relheight=0.3,relwidth=0.5)
+def saveid():
+    doc=docx.Document()
+    doc.add_heading("\t\tABC INSTITUTE OF TECHNOLOGY",0)
+    doc.add_picture(y,width=Inches(4))
+    doc.add_paragraph(f"Employee ID:{inpidi.get()}")
+    doc.add_paragraph(f"Name:{inpid1i.get()}")
+    doc.add_paragraph(f"Department:{depm.get()}")
+    doc.add_paragraph(f"Phone No:{inpid3i.get()}")
+    #doc.add_paragraph(f"Date Of Joining:{Dt.get()}")
+    doc.add_paragraph(f"\t\t\tABC Group Of Institute \n\t\t\t Greater Noida Delhi NCR INDIA")
+    doc.save(f'C:/Users/Adity/Desktop/mis/ID_Inst/Student_ID/{inpidi.get()}.docx')
+    tmsg.showinfo("Success","ID Card Generated")
+def generate_id():
+    global idg,inpidi,photolabel,inpid1i,depm,inpid3i
+    idgen=Toplevel(Win)
+    idgen.geometry("380x480")
+    #idgen.resizable(False,False)
+    idgen.title("Id_Card_Generator")
+    idg=Frame(idgen,bg="#31332f",relief="solid")
+    idg.place(relx=0,rely=0,relheight=1,relwidth=1)
+    inpidlabel=Label(idg,text="ID CARD GENERATION",font=style2,bg="grey",fg="white",relief="solid")
+    inpidlabel.place(relheight=0.1,relwidth=1,relx=0,rely=0)
+    inpid=Label(idg,text="Registration Number:",font=style2,bg="grey",fg="white",relief="raised")
+    inpid.place(relx=0.02,rely=0.12,relheight=0.065,relwidth=0.5)
+    inpidi=Entry(idg,textvariable=IntVar(),font=style2)
+    inpidi.place(relx=0.54,rely=0.12,relheight=0.065,relwidth=0.4)
+    inpidib=Button(idg,text="Click Photo",command=capture)
+    inpidib.place(relx=0.02,rely=0.20,relheight=0.065,relwidth=0.5)
+    photolabel=Label(idg)
+    photolabel.place(relx=0.02,rely=0.28,relheight=0.3,relwidth=0.5)
+    inpid1=Label(idg,text="Name",font=style2,bg="grey",fg="white",relief="raised")
+    inpid1.place(relx=0.02,rely=0.61,relheight=0.065,relwidth=0.5)
+    inpid1i=Entry(idg,textvariable=StringVar(),font=style2)
+    inpid1i.place(relx=0.54,rely=0.61,relheight=0.065,relwidth=0.4)
+    inpid2=Label(idg,text="Department",font=style2,bg="grey",fg="white",relief="raised")
+    inpid2.place(relx=0.02,rely=0.68,relheight=0.065,relwidth=0.5)
+    depm=StringVar()
+    inpid2i=OptionMenu(idg,depm,"Computer Science","Information Technology","Civil Engineering","Mechanical Engineering","Chemical Engineering","Artificial Intelligence","Electronics and Communication","Mining Engineering")
+    inpid2i.place(relx=0.54,rely=0.68,relheight=0.065,relwidth=0.4)
+    depm.set("select")
+    inpid3=Label(idg,text="Number",font=style2,bg="grey",fg="white",relief="raised")
+    inpid3.place(relx=0.02,rely=0.75,relheight=0.065,relwidth=0.5)
+    inpid3i=Entry(idg,textvariable=IntVar(),font=style2)
+    inpid3i.place(relx=0.54,rely=0.75,relheight=0.065,relwidth=0.4)
+    generid=Button(idg,text="Generate ID Card",font=style2,fg="white",bg="red",command=saveid)
+    generid.place(relx=0.02,rely=0.84,relheight=0.065,relwidth=0.4)
+    
 def up_onboard_photo():
     global full_path
     global img
@@ -655,7 +726,7 @@ Val3=Label(F1,text="     Password:",bg=backcolour,font=style)
 Val3.grid(row=1,column=4,padx=3)
 Val3_input=Entry(F1,textvariable=StringVar,disabledbackground="white",background="white",font=style2)
 Val3_input.grid(row=1,column=5,ipadx=4)
-Val4=Checkbutton(F1,text="Do you want to make\n the changes applicable",background=backcolour,fg="black",font=style2,activebackground=backcolour3,variable=var1,onvalue=1,offvalue=0)
+Val4=Checkbutton(F1,text="Do you want to make\n the changes applicable",background=backcolour,fg="black",font=style2,activebackground=backcolour,variable=var1,onvalue=1,offvalue=0)
 Val4.grid(row=3,column=0,pady=10)
 Val5=Button(F1,text="Add User",background=Buttoncolor,font=style,fg="white",activebackground=backcolour,width=15,command=add_user)
 Val5.grid(row=5,column=0,padx=15)
@@ -713,7 +784,7 @@ EActp=Button(F3,text="Send Promotional Emails",height=3,width=30)
 EActp.grid(row=0,column=2,padx=4,pady=4)
 EActp1=Button(F3,text="Generate Certificates",height=3,width=30,command=generate_cert)
 EActp1.grid(row=1,column=2,padx=4,pady=4)
-EActp2=Button(F3,text="Generate ID Cards",height=3,width=30)
+EActp2=Button(F3,text="Generate ID Cards",height=3,width=30,command=generate_id)
 EActp2.grid(row=2,column=2,padx=4,pady=4)
 EActp3=Button(F3,text="Check Student Attendence",height=3,width=30)
 EActp3.grid(row=3,column=2,padx=4,pady=4)
