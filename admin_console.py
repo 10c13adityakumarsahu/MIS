@@ -597,7 +597,70 @@ def take_ob():
     doc.add_paragraph(f"Date Of Joining:{Dt.get()}")
     doc.add_paragraph(f"\t\t\tABC Group Of Institute \n\t\t\t Greater Noida Delhi NCR INDIA")
     doc.save(f'C:/Users/Adity/Desktop/mis/ID_Inst/{empidi.get()}.docx')
+def fetchpayment():
+    global d,val
+    mydb = mysql.connector.connect(
+  host="localhost",
+  user="root",
+  password="Aditya@1234",
+  database="Teacher_info")
+    mycursor = mydb.cursor()
+    mycursor.execute(f"Select name,salary,AC_No from instructor where Emp_id={Emp2i.get()}")
+    passkey=mycursor.fetchall()
+    d=["Name:","Salary:","A/C No:"]
+    val=[]
+    count=0
+    for i in passkey:
+        x1.config(state=NORMAL)
+        for j in i:
+            x1.insert(END,f"{d[count]}\t{j}")
+            x1.insert(END,f"\n")
+            count+=1
+            val.append(j)
+    x1.config(state=DISABLED)
+def salcred():
+    Fet.config(state=DISABLED)
+    tmsg.showinfo("Paid",f"Salary Credited To {val[2]}")
+    x=tmsg.askyesnocancel("Payroll","Do you want to generate Payslip")
+    if x==True:
+        doc=docx.Document()
+        doc.add_heading("\t\tABC INSTITUTE OF TECHNOLOGY",0)
+        #doc.add_picture(full_path,width=Inches(4))
+        doc.add_paragraph(f"Employee ID:{Emp2i.get()}")
+        doc.add_paragraph(f"Name:{val[0]}")
+        doc.add_paragraph(f"In Hand Payment:{int(val[1])/12}")
+        doc.add_paragraph(f"Account Number:{val[2]}")
+        doc.add_paragraph(f"Date Of Payment:{month.get_date()}")
+        doc.add_paragraph(f"\t\t\tABC Group Of Institute \n\t\t\t Greater Noida Delhi NCR INDIA")
+        d=str(month.get())
+        e=d.replace("/","_")
+        doc.save(f'C:/Users/Adity/Desktop/mis/Payslip/{Emp2i.get()}{e}.docx')
+    
 
+def paysalary():
+    global payf1,Emp2i,x1,Fet,month
+    pay=Toplevel(Win)
+    pay.title("PAYMENT")
+    pay.bell()
+    pay.geometry("400x400")
+    pay.maxsize(550,550)
+    pay.minsize(350,350)
+    payf1=Frame(pay,bg=backcolour)
+    payf1.place(relx=0,rely=0,relwidth=1,relheight=1)
+    Emp1=Label(payf1,text="PAYMENT",bg="grey",font=style2,relief=SUNKEN)
+    Emp1.place(relheight=0.1,relwidth=1,relx=0,rely=0)
+    Emp2=Label(payf1,text="Employee ID",bg="grey",font=style2,relief=SUNKEN)
+    Emp2.place(relheight=0.085,relwidth=0.5,relx=0.02,rely=0.11)
+    Emp2i=Entry(payf1,textvariable=IntVar(),font=style2)
+    Emp2i.place(relx=0.54,rely=0.11,relheight=0.085,relwidth=0.4)
+    Fet=Button(payf1,text="Fetch Details",bg="red",fg="white",command=fetchpayment)
+    Fet.place(relx=0.02,rely=0.2,relheight=0.085,relwidth=0.5)
+    x1=Text(payf1,bg=backcolour,border=0)
+    x1.place(relx=0.02,rely=0.3,relwidth=1,relheight=0.15)
+    pay=Button(payf1,text="Do you want to iniciate the payment?",command=salcred,bg="red")
+    pay.place(relx=0.02,rely=0.47,relheight=0.085,relwidth=0.5)
+    month=DateEntry(payf1)
+    month.place(relx=0,rely=0)
 #========================Take Onboard==========================
 def on_board_data():
     valu=(empidi.get(),ot2i.get(),empidi.get(),0,ot5i.get(),str(ot3i.get()),ot4i.get(),ot6i.get(),ot7i.get(),depx.get(),qx.get(),sali.get(),str(Dt.get_date()),"null",anci.get())
@@ -771,7 +834,7 @@ Actp4.grid(row=4,column=0,padx=4,pady=4)
 #============================================================#
 EActp=Button(F3,text="Get Complete Employee Details",height=3,width=30,command=show_det_inst)
 EActp.grid(row=0,column=1,padx=4,pady=4)
-EActp1=Button(F3,text="Pay Employee Salary",height=3,width=30)
+EActp1=Button(F3,text="Pay Employee Salary",height=3,width=30,command=paysalary)
 EActp1.grid(row=1,column=1,padx=4,pady=4)
 EActp2=Button(F3,text="See Employee Document",height=3,width=30)
 EActp2.grid(row=2,column=1,padx=4,pady=4)

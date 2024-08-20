@@ -8,7 +8,7 @@ win.geometry("560x360")
 backcolour="#DA627D"
 style=("timesnewroman",20,"bold")
 front="#F9DBBD"
-backcolour2="#9A348E"
+backcolour2="#408EC6"
 Buttoncolor="#F9DBBD"
 buttontxt="#0D0628"
 win.resizable(False,False)

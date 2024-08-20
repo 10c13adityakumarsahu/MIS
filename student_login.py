@@ -7,7 +7,7 @@ Win=Tk()
 Win.title("Student Login")
 Win.geometry("500x500")
 Win.resizable(False,False)
-backcolour="#DA627D"
+backcolour="#408EC6"
 style=("timesnewroman",20,"bold")
 front="#F9DBBD"
 backcolour2="#9A348E"
