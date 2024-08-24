@@ -335,21 +335,6 @@ def reset_1():
 def generate_cert():
     import generate_certificate
 
-def generate_Admission_no(b,c,d,e,f,g,h,i,j,k,l):
-    global scs
-    b1=b
-    c=c
-    d=d
-    e=e
-    f=f
-    g=g
-    h=h
-    i=i
-    j=j
-    k=k
-    l=l
-    scs=random.randint(100000,1000000)
-    complete_Admission(a=int(scs),b=b1,c=c,d=d,e=e,f=f,g=g,h=h,i=i,j=j,k=k,l=l)
 def open_image():
     file_path = filedialog.askopenfilename(filetypes=[("Image Files", "*.png *.jpg *.jpeg")])
     if file_path:
@@ -430,19 +415,27 @@ def save_file(file_path):
             data = f.read()
         with open(save_path, "wb") as f:
             f.write(data)
+def generate_Admission_no():
+    global adminssion_no
+    adminssion_no=random.randint(100000,1000000)
+    complete_Admission(adminssion_no)
 
-def complete_Admission():
+def complete_Admission(a):
     mydb = mysql.connector.connect(
     host="localhost",
     user="root",
     password="Aditya@1234",
-    database="New_Entry")
+    database="Student_info")
     mycursor = mydb.cursor()
-    vql=((d1,d2,d3,d4,d5,d6,d7,d8,d9,d10,d11))
-    mql=(f"Insert into student_entry (Registration,Gender,Admission_Branch,Category,Mother,father,DOB,MTounge,Resadd,peradd,CRL) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)")
-    mycursor.execute(mql,vql)
-    tmsg.showinfo("Admission",f"Admission Done! \n Registration number is : {d1}")
+    acval=int(0)
+    val=(a,ad3a.get(),a,0,ad4v.get(),ad5v.get(),ad6v.get(),ad7a.get(),ad8a.get(),ad11a.get(),ad12a.get(),ad13a.get(),120000,0,120000,str(cal.get()),ad10a.get())
+    st=f"Insert into students values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+    mycursor.execute(st,val)
+    mydb.commit()
+    mycursor.close()
+    tmsg.showinfo("Admission",f"Admission Done! \n Registration number is : {a}")
 def make_admission():
+    global ad3a,ad4v,ad5v,ad6v,cal,ad7a,ad8a,ad10a,ad11a,ad12a,ad13a
     Admission=Toplevel(Win)
     Admission.geometry("800x800")
     Admission.state("zoomed")
@@ -457,55 +450,57 @@ def make_admission():
     ad2.place(rely=0.1,relx=0,relwidth=1,relheight=0.9)
     ad3=Label(ad2,text="Name",width=20,anchor="w",bg=backcolour4,font=style3)
     ad3.grid(row=0,column=0,pady=2,padx=2)
+    ad3a=Entry(ad2,textvariable=StringVar(),width=13,bg="white",font=style3)
+    ad3a.grid(row=0,column=1,padx=10)
     ad4=Label(ad2,text="Gender",width=20,anchor="w",bg=backcolour4,font=style3)
     ad4.grid(row=1,column=0,pady=2,padx=2)
-    ad5=Label(ad2,text="Admission Branch",width=20,anchor="w",bg=backcolour4,font=style3)
-    ad5.grid(row=2,column=0,pady=2,padx=2)
-    ad6=Label(ad2,text="Category",width=20,anchor="w",bg=backcolour4,font=style3)
-    ad6.grid(row=3,column=0,pady=2,padx=2)
-    ad7=Label(ad2,text="Mother's Name",width=20,anchor="w",bg=backcolour4,font=style3)
-    ad7.grid(row=4,column=0,pady=2,padx=2)
-    ad8=Label(ad2,text="Father's Name",width=20,anchor="w",bg=backcolour4,font=style3)
-    ad8.grid(row=5,column=0,pady=2,padx=2)
-    ad9=Label(ad2,text="Date Of Birth",width=20,anchor="w",bg=backcolour4,font=style3)
-    ad9.grid(row=6,column=0,pady=2,padx=2)
-    ad10=Label(ad2,text="Mother Tounge",width=20,anchor="w",bg=backcolour4,font=style3)
-    ad10.grid(row=7,column=0,pady=2,padx=2)
-    ad11=Label(ad2,text="Residencial Address",width=20,anchor="w",bg=backcolour4,font=style3)
-    ad11.grid(row=8,column=0,pady=2,padx=2)
-    ad11=Label(ad2,text="Permenant Address",width=20,anchor="w",bg=backcolour4,font=style3)
-    ad11.grid(row=9,column=0,pady=2,padx=2)
-    ad12=Label(ad2,text="Common Rank",width=20,anchor="w",bg=backcolour4,font=style3)
-    ad12.grid(row=10,column=0,pady=2,padx=2)
-    ad3a=Entry(ad2,textvariable=StringVar,width=13,bg="white",font=style3)
-    ad3a.grid(row=0,column=1,padx=10)
     ad4v=StringVar()
     ad4a=OptionMenu(ad2,ad4v,"Male","Female")
     ad4v.set("Select")
     ad4a.grid(row=1,column=1)
+    ad5=Label(ad2,text="Admission Branch",width=20,anchor="w",bg=backcolour4,font=style3)
+    ad5.grid(row=2,column=0,pady=2,padx=2)
     ad5v=StringVar()
     ad5a=OptionMenu(ad2,ad5v,"Computer Science","Information Technology","Civil Engineering","Mechanical Engineering","Chemical Engineering","Artificial Intelligence","Electronics and Communication","Mining Engineering")
     ad5a.grid(row=2,column=1)
     ad5v.set("Select")
+    ad6=Label(ad2,text="Category",width=20,anchor="w",bg=backcolour4,font=style3)
+    ad6.grid(row=3,column=0,pady=2,padx=2)
     ad6v=StringVar()
     ad6a=OptionMenu(ad2,ad6v,"Select","General","OBC(NCL)","SC","ST","PWD")
     ad6a.grid(row=3,column=1)
     ad6v.set("Select")
-    ad7a=Entry(ad2,textvariable=StringVar,width=13,bg="white",font=style3)
+    ad7=Label(ad2,text="Mother's Name",width=20,anchor="w",bg=backcolour4,font=style3)
+    ad7.grid(row=4,column=0,pady=2,padx=2)
+    ad7a=Entry(ad2,textvariable=StringVar(),width=13,bg="white",font=style3)
     ad7a.grid(row=4,column=1,padx=10)
-    ad8a=Entry(ad2,textvariable=StringVar,width=13,bg="white",font=style3)
+    ad8=Label(ad2,text="Father's Name",width=20,anchor="w",bg=backcolour4,font=style3)
+    ad8.grid(row=5,column=0,pady=2,padx=2)
+    ad8a=Entry(ad2,textvariable=StringVar(),width=13,bg="white",font=style3)
     ad8a.grid(row=5,column=1,padx=10)
+    ad9=Label(ad2,text="Date Of Birth",width=20,anchor="w",bg=backcolour4,font=style3)
+    ad9.grid(row=6,column=0,pady=2,padx=2)
     sel=StringVar() # declaring string variable 
     cal=DateEntry(ad2,selectmode='day',textvariable=sel)
     cal.grid(row=6,column=1,padx=20)
-    ad10a=Entry(ad2,textvariable=StringVar,width=13,bg="white",font=style3)
+    ad10=Label(ad2,text="Mother Tounge",width=20,anchor="w",bg=backcolour4,font=style3)
+    ad10.grid(row=7,column=0,pady=2,padx=2)
+    ad10a=Entry(ad2,textvariable=StringVar(),width=13,bg="white",font=style3)
     ad10a.grid(row=7,column=1,padx=10)
-    ad11a=Entry(ad2,textvariable=StringVar,width=13,bg="white",font=style3)
+    ad11=Label(ad2,text="Residencial Address",width=20,anchor="w",bg=backcolour4,font=style3)
+    ad11.grid(row=8,column=0,pady=2,padx=2)
+    ad11a=Entry(ad2,textvariable=StringVar(),width=13,bg="white",font=style3)
     ad11a.grid(row=8,column=1,padx=10)
-    ad12a=Entry(ad2,textvariable=StringVar,width=13,bg="white",font=style3)
+    ad12=Label(ad2,text="Permenant Address",width=20,anchor="w",bg=backcolour4,font=style3)
+    ad12.grid(row=9,column=0,pady=2,padx=2)
+    ad12a=Entry(ad2,textvariable=StringVar(),width=13,bg="white",font=style3)
     ad12a.grid(row=9,column=1,padx=10)
-    ad13a=Entry(ad2,textvariable=StringVar,width=13,bg="white",font=style3)
+    pa=ad12a.get()
+    ad13=Label(ad2,text="Common Rank",width=20,anchor="w",bg=backcolour4,font=style3)
+    ad13.grid(row=10,column=0,pady=2,padx=2)
+    ad13a=Entry(ad2,textvariable=IntVar(),width=13,bg="white",font=style3)
     ad13a.grid(row=10,column=1,padx=10)
+    crl=ad13a.get()
     ad15=Label(ad2,text="Upload Document",width=20,anchor="w",bg=backcolour4,font=style3)
     ad15.grid(row=11,column=0,pady=4)
     ad16b=Button(ad2,text="Upload Aadhar",command=upload_file,anchor="w",width=15,font=style2)
@@ -520,19 +515,8 @@ def make_admission():
     #TC,Aadhar,Migration,Rankcard
     #ad16a=Checkbutton(ad2,text="Aadhar",background=backcolour,fg="black",font=style2,activebackground=backcolour3,variable=vary,onvalue="NA",offvalue="Aadhar",command=filedialog.askopenfile(mode="r"))
     #ad16a.grid(row=12,column=0)
-    global d1,d2,d3,d4,d5,d6,d8,d7,d9,d10,d11,ad14
-    d1=ad3a.get()
-    d2=ad4v.get()
-    d3=ad5v.get()
-    d4=ad6v.get()
-    d5=ad7a.get()
-    d6=ad8a.get()
-    d7=str(sel.get())
-    d8=ad10a.get()
-    d9=ad11a.get()
-    d10=ad12a.get()
-    d11=ad13a.get()
     ad14=Button(ad2,text="Submit and Generate Registration Number",bg="red",fg="white",command=generate_Admission_no)
+    ad14.grid(row=13,column=0)
     Admission.bind('<Escape>',quit)
 #============================================================
 def student_details():
@@ -551,7 +535,7 @@ def student_details():
         passkey = mycursor.fetchall()
         t1.config(state="normal")
         t1.delete(1.0,END)
-        m=["Registartion:","Name:","Password:","Access:","Gender:","Branch:","Category:","Mother:","Father:","Residencial Address:","Permenant Address:","CRL:","Fees:","Fees Paid:","Fees Remaining:"]
+        m=["Registartion:","Name:","Password:","Access:","Gender:","Branch:","Category:","Mother:","Father:","Residencial Address:","Permenant Address:","CRL:","Fees:","Fees Paid:","Fees Remaining:","DOB:","Mother Tounge:"]
         count=0
         for x in passkey:
             for y in x:
@@ -616,9 +600,9 @@ def saveid():
         doc.add_paragraph(f"-------------------------------------------------------------------------------------------------------------------")
         doc.add_paragraph(f"\t\t\tABC Group Of Institute \n\t\t\t Greater Noida Delhi NCR INDIA")
         doc.save(f'C:/Users/Adity/Desktop/mis/ID_Inst/Misc/{inpidi.get()}.docx')
-        tmsg.showinfo("Success","ID Card Generated")
+        tmsg.showinfo("Success","ID Card Generated for visitors")
     else:
-        tmsg.showerror("Undefined","Select USer Type")
+        tmsg.showerror("Undefined","Select User Type")
 def generate_id():
     global idg,inpidi,photolabel,inpid1i,depm,inpid3i,tp
     idgen=Toplevel(Win)
@@ -903,14 +887,14 @@ def push_announcment():
     password="Aditya@1234",
     database="announcment")
     mycursor = mydb.cursor()
-    vl=(detins,arm)
-    vlu=f"insert into notice (note,target) values (%s,%s)"
-    mycursor.execute(vlu,vl)
+    sql = f"INSERT INTO notice (note, target) VALUES (%s, %s)"   
+    val = (af2.get("1.0",END),ty.get())
+    mycursor.execute(sql, val)
     mydb.commit()
-    mydb.close()
+    mycursor.close()
     tmsg.showinfo("Push","Announcment Pushed")
 def announcment():
-    global detins,arm
+    global ty,af2
     an=Toplevel(Win)
     an.title("Announcements")
     an.geometry("360x360")
@@ -920,16 +904,13 @@ def announcment():
     af1.place(relx=0,rely=0,relheight=0.085,relwidth=1)
     af2=Text(af,bg=backcolour,font=style2,fg="white")
     af2.place(relx=0,rely=0.09,relheight=0.75,relwidth=1)
-    ty=StringVar()
+    ty=StringVar(af)
     ty.set("Select")
     af4=OptionMenu(af,ty,"Students","Instructors","All")
-    af4.place(relx=0,rely=0.85,relheight=0.07,relwidth=0.4)
-    detins= af2.get("1.0",END)  
-    arm=ty.get()
+    #ty.set("Select")
+    af4.place(relx=0,rely=0.85,relheight=0.07,relwidth=0.4)  
     af3=Button(af,text="Push Announcements",bg="red",fg="white",command=push_announcment)
     af3.place(relx=0,rely=0.95,relheight=0.049,relwidth=0.4)
-    
-    
     
 def feesdet():
     mydb = mysql.connector.connect(
