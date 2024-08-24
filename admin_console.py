@@ -132,7 +132,7 @@ def sql_commands(a,b="select"):
                 passkey=mycursor.fetchall()
                 #for x in passkey:
                     #print(x)
-                tmsg.showinfo("Success","User Data Updated")
+                tmsg.showinfo("Success","User Access Updated")
                 reset()
             else:
                 vall=(Val1_input.get())
@@ -143,7 +143,7 @@ def sql_commands(a,b="select"):
                 passkey=mycursor.fetchall()
                 #for x in passkey:
                     #print(x)
-                tmsg.showinfo("Success","User Data Updated")
+                tmsg.showinfo("Success","User Access Updated")
                 reset()
 
         except:
@@ -153,7 +153,7 @@ def sql_commands(a,b="select"):
         try:
             if tab=="students":
                 vall=(Val1_input.get())
-                sql = f"delete {tab}  where Registration={vall}"
+                sql = f"delete from {tab}  where Registration={vall}"
                 mycursor.execute(sql)
                 mydb.commit()
                 mycursor.execute(f"Select * from {tab}")
@@ -233,7 +233,7 @@ def sql_commands(a,b="select"):
         try:
             if tab=="students":
                 reset_1()
-                mycursor.execute(f"Select * from {tab}")
+                mycursor.execute(f"Select Registration,Name,password,access from {tab}")
                 passkey=mycursor.fetchall()
                 t1.config(state="normal")
                 t1.delete(1.0,END)
@@ -360,6 +360,35 @@ def open_image():
         label = Label(xwin, image=img)
         label.image = img # Keep reference to avoid garbage collection
         label.pack()
+def stu_files():
+    try:
+        file_path = filedialog.askopenfilename(initialdir=f"C:/Users/Adity/Desktop/mis/Files/Student/{int(Val1_input.get())}",filetypes=[("Image Files", "*.png *.jpg *.jpeg")])
+        if file_path:
+            xwin=Toplevel(Win)
+            img = Image.open(file_path)
+            img = img.resize((300, 300), Image.LANCZOS) # Resize image if needed
+            img = ImageTk.PhotoImage(img)
+            label = Label(xwin, image=img)
+            label.image = img # Keep reference to avoid garbage collection
+            label.pack()  
+    except:
+        tmsg.showerror("Error","Enter Valid Registration Number") 
+
+def instruct_files():
+    try:
+        file_path = filedialog.askopenfilename(initialdir=f"C:/Users/Adity/Desktop/mis/Files/Instructor/{int(Val1_input.get())}",filetypes=[("Image Files", "*.png *.jpg *.jpeg")])
+        if file_path:
+            xwin=Toplevel(Win)
+            img = Image.open(file_path)
+            img = img.resize((300, 300), Image.LANCZOS) # Resize image if needed
+            img = ImageTk.PhotoImage(img)
+            label = Label(xwin, image=img)
+            label.image = img # Keep reference to avoid garbage collection
+            label.pack()  
+    except:
+        tmsg.showerror("Error","Enter Valid Employee Id")    
+    
+    
 def show_det_inst():
     mydb = mysql.connector.connect(
     host="localhost",
@@ -402,15 +431,17 @@ def save_file(file_path):
         with open(save_path, "wb") as f:
             f.write(data)
 
-def complete_Admission(a,b,c,d,e,f,g,h,i,j,k,l):
+def complete_Admission():
     mydb = mysql.connector.connect(
     host="localhost",
     user="root",
     password="Aditya@1234",
     database="New_Entry")
     mycursor = mydb.cursor()
-    mycursor.execute(f"Insert into student_entry (Registration,Gender,Admission_Branch,Category,Mother,father,DOB,MTounge,Resadd,peradd,CRL) values ({a},{b},{c},{d},{e},{f},{g},{h},{i},{j},{k},{l})")
-    tmsg.showinfo("Admission",f"Admission Done! \n Registration number is : {a}")
+    vql=((d1,d2,d3,d4,d5,d6,d7,d8,d9,d10,d11))
+    mql=(f"Insert into student_entry (Registration,Gender,Admission_Branch,Category,Mother,father,DOB,MTounge,Resadd,peradd,CRL) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)")
+    mycursor.execute(mql,vql)
+    tmsg.showinfo("Admission",f"Admission Done! \n Registration number is : {d1}")
 def make_admission():
     Admission=Toplevel(Win)
     Admission.geometry("800x800")
@@ -489,6 +520,7 @@ def make_admission():
     #TC,Aadhar,Migration,Rankcard
     #ad16a=Checkbutton(ad2,text="Aadhar",background=backcolour,fg="black",font=style2,activebackground=backcolour3,variable=vary,onvalue="NA",offvalue="Aadhar",command=filedialog.askopenfile(mode="r"))
     #ad16a.grid(row=12,column=0)
+    global d1,d2,d3,d4,d5,d6,d8,d7,d9,d10,d11,ad14
     d1=ad3a.get()
     d2=ad4v.get()
     d3=ad5v.get()
@@ -500,8 +532,37 @@ def make_admission():
     d9=ad11a.get()
     d10=ad12a.get()
     d11=ad13a.get()
-    ad14=Button(ad2,text="Submit and Generate Registration Number",bg="red",fg="white",command=generate_Admission_no(b=d1,c=d2,d=d3,e=d4,f=d5,g=d6,h=d7,i=d8,j=d9,k=d10,l=d11))
+    ad14=Button(ad2,text="Submit and Generate Registration Number",bg="red",fg="white",command=generate_Admission_no)
     Admission.bind('<Escape>',quit)
+#============================================================
+def student_details():
+    mydb = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="Aditya@1234",
+    database="Student_info")
+    mycursor = mydb.cursor()
+    detins= Val1_input.get()
+    if detins=='':
+        tmsg.showerror("Error","Unable To Fetch Data")
+        return
+    try:
+        mycursor.execute(f"SELECT * FROM students where Registration={detins}")
+        passkey = mycursor.fetchall()
+        t1.config(state="normal")
+        t1.delete(1.0,END)
+        m=["Registartion:","Name:","Password:","Access:","Gender:","Branch:","Category:","Mother:","Father:","Residencial Address:","Permenant Address:","CRL:","Fees:","Fees Paid:","Fees Remaining:"]
+        count=0
+        for x in passkey:
+            for y in x:
+        #print(x)
+                t1.insert(END,f"{m[count]}{y}\t")
+                t1.insert(END,f"\n")
+                count+=1
+        t1.config(state="disabled")
+        mycursor.close()
+    except:
+        tmsg.showerror("Error","Unable To Fetch Data")
 #=============================================================
 def capture():
     cam_port=0
@@ -531,14 +592,37 @@ def saveid():
     doc.add_paragraph(f"Name:{inpid1i.get()}")
     doc.add_paragraph(f"Department:{depm.get()}")
     doc.add_paragraph(f"Phone No:{inpid3i.get()}")
-    #doc.add_paragraph(f"Date Of Joining:{Dt.get()}")
-    doc.add_paragraph(f"\t\t\tABC Group Of Institute \n\t\t\t Greater Noida Delhi NCR INDIA")
-    doc.save(f'C:/Users/Adity/Desktop/mis/ID_Inst/Student_ID/{inpidi.get()}.docx')
-    tmsg.showinfo("Success","ID Card Generated")
+    #doc.add_paragraph(f"Date Of Joining:{Dt.get()}"),"Administrator","Visitor/Others"
+    if tp.get()=="Student":
+        doc.add_paragraph(f"Role:{tp.get()}")
+        doc.add_paragraph(f"-------------------------------------------------------------------------------------------------------------------")
+        doc.add_paragraph(f"\t\t\tABC Group Of Institute \n\t\t\t Greater Noida Delhi NCR INDIA")
+        doc.save(f'C:/Users/Adity/Desktop/mis/ID_Inst/Student_ID/{inpidi.get()}.docx')
+        tmsg.showinfo("Success","ID Card Generated")
+    elif tp.get()=="Instructor":
+        doc.add_paragraph(f"Role:{tp.get()}")
+        doc.add_paragraph(f"-------------------------------------------------------------------------------------------------------------------")
+        doc.add_paragraph(f"\t\t\tABC Group Of Institute \n\t\t\t Greater Noida Delhi NCR INDIA")
+        doc.save(f'C:/Users/Adity/Desktop/mis/ID_Inst/Inst_ID/{inpidi.get()}.docx')
+        tmsg.showinfo("Success","ID Card Generated")
+    elif tp.get()=="Administrator":
+        doc.add_paragraph(f"Role:{tp.get()}")
+        doc.add_paragraph(f"-------------------------------------------------------------------------------------------------------------------")
+        doc.add_paragraph(f"\t\t\tABC Group Of Institute \n\t\t\t Greater Noida Delhi NCR INDIA")
+        doc.save(f'C:/Users/Adity/Desktop/mis/ID_Inst/Admin_ID/{inpidi.get()}.docx')
+        tmsg.showinfo("Success","ID Card Generated")
+    elif tp.get()=="Visitor/Others":
+        doc.add_paragraph(f"Role:{tp.get()}")
+        doc.add_paragraph(f"-------------------------------------------------------------------------------------------------------------------")
+        doc.add_paragraph(f"\t\t\tABC Group Of Institute \n\t\t\t Greater Noida Delhi NCR INDIA")
+        doc.save(f'C:/Users/Adity/Desktop/mis/ID_Inst/Misc/{inpidi.get()}.docx')
+        tmsg.showinfo("Success","ID Card Generated")
+    else:
+        tmsg.showerror("Undefined","Select USer Type")
 def generate_id():
-    global idg,inpidi,photolabel,inpid1i,depm,inpid3i
+    global idg,inpidi,photolabel,inpid1i,depm,inpid3i,tp
     idgen=Toplevel(Win)
-    idgen.geometry("380x480")
+    idgen.geometry("430x480")
     #idgen.resizable(False,False)
     idgen.title("Id_Card_Generator")
     idg=Frame(idgen,bg="#31332f",relief="solid")
@@ -558,21 +642,27 @@ def generate_id():
     inpid1i=Entry(idg,textvariable=StringVar(),font=style2)
     inpid1i.place(relx=0.54,rely=0.61,relheight=0.065,relwidth=0.4)
     inpid2=Label(idg,text="Department",font=style2,bg="grey",fg="white",relief="raised")
-    inpid2.place(relx=0.02,rely=0.68,relheight=0.065,relwidth=0.5)
+    inpid2.place(relx=0.02,rely=0.71,relheight=0.065,relwidth=0.5)
     depm=StringVar()
     inpid2i=OptionMenu(idg,depm,"Computer Science","Information Technology","Civil Engineering","Mechanical Engineering","Chemical Engineering","Artificial Intelligence","Electronics and Communication","Mining Engineering")
-    inpid2i.place(relx=0.54,rely=0.68,relheight=0.065,relwidth=0.4)
+    inpid2i.place(relx=0.54,rely=0.71,relheight=0.065,relwidth=0.4)
     depm.set("select")
     inpid3=Label(idg,text="Number",font=style2,bg="grey",fg="white",relief="raised")
-    inpid3.place(relx=0.02,rely=0.75,relheight=0.065,relwidth=0.5)
+    inpid3.place(relx=0.02,rely=0.81,relheight=0.065,relwidth=0.5)
     inpid3i=Entry(idg,textvariable=IntVar(),font=style2)
-    inpid3i.place(relx=0.54,rely=0.75,relheight=0.065,relwidth=0.4)
+    inpid3i.place(relx=0.54,rely=0.81,relheight=0.065,relwidth=0.4)
     generid=Button(idg,text="Generate ID Card",font=style2,fg="white",bg="red",command=saveid)
-    generid.place(relx=0.02,rely=0.84,relheight=0.065,relwidth=0.4)
-    
+    generid.place(relx=0.02,rely=0.91,relheight=0.065,relwidth=0.4)
+    tp=StringVar()
+    typeuser=OptionMenu(idg,tp,"Student","Instructor","Administrator","Visitor/Others")
+    typeuser.place(relx=0,rely=0,relheight=0.05,relwidth=0.25)
+    tp.set("Select")    
 def up_onboard_photo():
     global full_path
     global img
+    newpath = rf'C:\Users\Adity\Desktop\mis\Files\Instructor\{empidi.get()}' 
+    if not os.path.exists(newpath):
+        os.makedirs(newpath)
     file_path = filedialog.askopenfilename(initialdir='C:/Users/Adity/Downloads',filetypes=[("Image Files", "*.png *.jpg *.jpeg")],defaultextension='png')
     if file_path:
         full_path = os.path.abspath(file_path) 
@@ -582,6 +672,23 @@ def up_onboard_photo():
         label = Label(onb, image=img)
         label.image = img # Keep reference to avoid garbage collection
         label.place(relx=0.7,rely=0.11,relheight=0.25,relwidth=0.25)
+        saveupload(file_path,newpath)
+def up_onboard_document():
+    global full_path1
+    global img
+    newpath1 = rf'C:\Users\Adity\Desktop\mis\Files\Instructor\{empidi.get()}' 
+    if not os.path.exists(newpath1):
+        os.makedirs(newpath1)
+    file_path1 = filedialog.askopenfilename(initialdir='C:/Users/Adity/Downloads',filetypes=[("Image Files", "*.png *.jpg *.jpeg")],defaultextension='png')
+    saveupload(file_path1,newpath1)
+def saveupload(file_path,newpath):
+    save_path = filedialog.asksaveasfilename(initialdir=newpath,filetypes=[("Image Files", "*.png *.jpg *.jpeg")],title=f"Document{""}.jpg")
+    if save_path:
+        with open(file_path, "rb") as f:
+            data = f.read()
+        with open(save_path, "wb") as f:
+            f.write(data)
+    
 #def upload_file():
  #   file_path = filedialog.askopenfilename(filetypes=[("Image Files", "*.png *.jpg *.jpeg")])
   #  if file_path:
@@ -734,11 +841,11 @@ def onboard():
     ot9i.place(relx=0.3,rely=0.66,relwidth=0.25,relheight=0.065)
     ot10a=Button(oF1,text="Upload Photo",command=up_onboard_photo)
     ot10a.place(relx=0.02,rely=0.8,relwidth=0.25,relheight=0.065)
-    ot10b=Button(oF1,text="Upload CV",command=up_onboard_photo)
+    ot10b=Button(oF1,text="Upload CV",command=up_onboard_document)
     ot10b.place(relx=0.3,rely=0.8,relwidth=0.25,relheight=0.065)
-    ot10c=Button(oF1,text="Upload ID proof",command=up_onboard_photo)
+    ot10c=Button(oF1,text="Upload ID proof",command=up_onboard_document)
     ot10c.place(relx=0.02,rely=0.88,relwidth=0.25,relheight=0.065)
-    ot10d=Button(oF1,text="Upload Degree & Experience",command=up_onboard_photo)
+    ot10d=Button(oF1,text="Upload Degree & Experience",command=up_onboard_document)
     ot10d.place(relx=0.3,rely=0.88,relwidth=0.25,relheight=0.065)
     li=PhotoImage(height=20,width=20)
     imglo=Label(oF1,image=li)
@@ -763,6 +870,179 @@ def onboard():
     ot11=Button(oF1,text="Take On Board",bg="red",fg="white",command=on_board_data)
 
     ot11.place(relx=0.02,rely=0.95,relheight=0.05,relwidth=0.53)
+def Ref():
+    x=tmsg.showwarning("Relief","Do you want to Procced")
+    if x==False:
+        tmsg.showinfo("Action","Reverted")
+    else:
+        mydb = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="Aditya@1234",
+        database="relief")
+        mycursor = mydb.cursor()
+        vl=(str(Emp_Idx.get()),str(Doe.get()),str(Roee.get()))
+        mal=f"insert into relief values(%s,%s,%s)"
+        mycursor.execute(mal,vl)
+        mydb.commit()
+        mydb.close()
+        mydb = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="Aditya@1234",
+        database="Teacher_info")
+        mycursor = mydb.cursor()
+        mycursor.execute(f"delete from instructor where Emp_id={(Emp_Idx.get())}")
+        mydb.commit()
+        mydb.close()
+        tmsg.showinfo("Relief","Employee Relief Completed")
+def push_announcment():
+    mydb = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="Aditya@1234",
+    database="announcment")
+    mycursor = mydb.cursor()
+    vl=(detins,arm)
+    vlu=f"insert into notice (note,target) values (%s,%s)"
+    mycursor.execute(vlu,vl)
+    mydb.commit()
+    mydb.close()
+    tmsg.showinfo("Push","Announcment Pushed")
+def announcment():
+    global detins,arm
+    an=Toplevel(Win)
+    an.title("Announcements")
+    an.geometry("360x360")
+    af=Frame(an,bg="grey")
+    af.place(relx=0,rely=0,relheight=1,relwidth=1)
+    af1=Label(af,text="Make Announements",font=style2,bg="grey")
+    af1.place(relx=0,rely=0,relheight=0.085,relwidth=1)
+    af2=Text(af,bg=backcolour,font=style2,fg="white")
+    af2.place(relx=0,rely=0.09,relheight=0.75,relwidth=1)
+    ty=StringVar()
+    ty.set("Select")
+    af4=OptionMenu(af,ty,"Students","Instructors","All")
+    af4.place(relx=0,rely=0.85,relheight=0.07,relwidth=0.4)
+    detins= af2.get("1.0",END)  
+    arm=ty.get()
+    af3=Button(af,text="Push Announcements",bg="red",fg="white",command=push_announcment)
+    af3.place(relx=0,rely=0.95,relheight=0.049,relwidth=0.4)
+    
+    
+    
+def feesdet():
+    mydb = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="Aditya@1234",
+    database="Student_info")
+    mycursor = mydb.cursor()
+    detins= Val1_input.get()
+    if detins=='':
+        tmsg.showerror("Error","Unable To Fetch Data")
+        return
+    try:
+        mycursor.execute(f"SELECT fees,fees_paid,fees_remaining FROM students where Registration={detins}")
+        passkey = mycursor.fetchall()
+        t1.config(state="normal")
+        t1.delete(1.0,END)
+        m=["Fees:","Fees Paid:","Fees Remaining:"]
+        count=0
+        for x in passkey:
+            for y in x:
+        #print(x)
+                t1.insert(END,f"{m[count]}{y}\t")
+                t1.insert(END,f"\n")
+                count+=1
+        t1.config(state="disabled")
+        mycursor.close()
+    except:
+        tmsg.showerror("Error","Unable To Fetch Data")
+def Relief():
+    global Emp_Idx,Doe,Roee
+    Rs=Toplevel(Win)
+    Rs.title("Relief")
+    Rs.geometry("480x400")
+    Rs.resizable(False,False)
+    Frs=Frame(Rs,bg="grey")
+    Frs.place(relx=0,rely=0,relwidth=1,relheight=1)
+    Emp_Id=Label(Frs,text="Employee Id:",font=style,bg="grey",fg="white")
+    Emp_Id.grid(column=0,row=0)
+    Emp_Idx=Entry(Frs,font=style,textvariable=IntVar())
+    Emp_Idx.grid(row=0,column=1)
+    Doe1=Label(Frs,text="Date OF Relief:",font=style,bg="grey",fg="white")
+    Doe1.grid(column=0,row=1)
+    Doe=DateEntry(Frs)
+    Doe.grid(row=1,column=1)
+    Roe=Label(Frs,text="Reason OF Relief:",font=style,bg="grey",fg="white")
+    Roe.grid(column=0,row=2)
+    Roee=Entry(Frs,font=style,textvariable=StringVar())
+    Roee.grid(row=2,column=1)
+    acp=Checkbutton(Frs,bg="grey",fg="black",text="You hence certify that \n you have no objection",font=style2,activebackground="grey")
+    acp.grid(row=3,column=0)
+    cert=Button(Frs,text="Generate Certificate",command=generate_cert)
+    cert.grid(row=4,column=0)
+    Relieff=Button(Frs,text="Relief",command=Ref,bg="red",fg="white")
+    Relieff.grid(row=5,column=0)
+def Trf():
+        if acpvar.get()==0:
+            return
+        else:
+            mydb = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="Aditya@1234",
+            database="transfer")
+            mycursor = mydb.cursor()
+            vl=(str(S_Idx.get()),str(Doeo.get()),str(Rope.get()),str(dpx.get()))
+            mal=f"insert into transfer values(%s,%s,%s,%s)"
+            mycursor.execute(mal,vl)
+            mydb.commit()
+            mydb.close()
+            mydb = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="Aditya@1234",
+            database="Student_Info")
+            mycursor = mydb.cursor()
+            mycursor.execute(f"delete from students where Registration={(S_Idx.get())}")
+            mydb.commit()
+            mydb.close()
+            tmsg.showinfo("Relief","Student Transfer Completed")
+    
+def transfer():
+    global S_Idx,Doeo,Rope,dpx,acpvar
+    tf=Toplevel(Win)
+    tf.title("Transfer")
+    tf.geometry("480x480")
+    Frs=Frame(tf,bg="grey")
+    Frs.place(relx=0,rely=0,relwidth=1,relheight=1)
+    S_Id=Label(Frs,text="Registration Id:",font=style,bg="grey",fg="white")
+    S_Id.grid(column=0,row=0)
+    S_Idx=Entry(Frs,font=style,textvariable=IntVar())
+    S_Idx.grid(row=0,column=1)
+    Doe1o=Label(Frs,text="Date OF Relief:",font=style,bg="grey",fg="white")
+    Doe1o.grid(column=0,row=1)
+    Doeo=DateEntry(Frs)
+    Doeo.grid(row=1,column=1)
+    Roeo=Label(Frs,text="Reason OF Relief:",font=style,bg="grey",fg="white")
+    Roeo.grid(column=0,row=2)
+    Rope=Entry(Frs,font=style,textvariable=StringVar())
+    Rope.grid(row=2,column=1)
+    dpx=StringVar()
+    Dp=OptionMenu(Frs,dpx,"Computer Science","Information Technology","Civil Engineering","Mechanical Engineering","Chemical Engineering","Artificial Intelligence","Electronics and Communication","Mining Engineering")
+    dpx.set("Select Department")
+    Dp.grid(column=0,row=3)
+    acpvar=IntVar()
+    acp=Checkbutton(Frs,bg="grey",fg="black",text="You hence certify that \n you have no objection\n& no fees Due Remaining",font=style2,activebackground="grey",variable=acpvar,onvalue=1,offvalue=0)
+    acp.grid(row=4,column=0)
+    cert=Button(Frs,text="Generate Certificate",command=generate_cert)
+    cert.grid(row=5,column=0)
+    Relieff=Button(Frs,text="Transfer",command=Trf,bg="red",fg="white")
+    Relieff.grid(row=6,column=0)
+
+
 
 #===============================================================
 Admin_Label=Label(Win,text="Administrator Panel",background=backcolour2,fg=front,font=style,relief=GROOVE)
@@ -821,29 +1101,29 @@ ValF2_2=Button(F2,text="Reset",background=Buttoncolor,fg="white",font=style,acti
 ValF2_2.place(x=400,y=260)
 F3=LabelFrame(Win,text="Action Pane",labelanchor="n",font=style)
 F3.place(x=800,y=460,relheight=0.43,relwidth=0.47)
-Actp=Button(F3,text="Get Complete Student Details",height=3,width=30)
+Actp=Button(F3,text="Get Complete Student Details",height=3,width=30,command=student_details)
 Actp.grid(row=0,column=0,padx=4,pady=4)
-Actp1=Button(F3,text="Get Student Fees Details",height=3,width=30)
+Actp1=Button(F3,text="Get Student Fees Details",height=3,width=30,command=feesdet)
 Actp1.grid(row=1,column=0,padx=4,pady=4)
-Actp2=Button(F3,text="See Complete Student Document",height=3,width=30,command=open_image)
+Actp2=Button(F3,text="See Complete Student Document",height=3,width=30,command=stu_files)
 Actp2.grid(row=2,column=0,padx=4,pady=4)
 Actp3=Button(F3,text="Make new Admission",height=3,width=30,command=make_admission)
 Actp3.grid(row=3,column=0,padx=4,pady=4)
-Actp4=Button(F3,text="Transfer Student",height=3,width=30)
+Actp4=Button(F3,text="Transfer Student",height=3,width=30,command=transfer)
 Actp4.grid(row=4,column=0,padx=4,pady=4)
 #============================================================#
 EActp=Button(F3,text="Get Complete Employee Details",height=3,width=30,command=show_det_inst)
 EActp.grid(row=0,column=1,padx=4,pady=4)
 EActp1=Button(F3,text="Pay Employee Salary",height=3,width=30,command=paysalary)
 EActp1.grid(row=1,column=1,padx=4,pady=4)
-EActp2=Button(F3,text="See Employee Document",height=3,width=30)
+EActp2=Button(F3,text="See Employee Document",height=3,width=30,command=instruct_files)
 EActp2.grid(row=2,column=1,padx=4,pady=4)
 EActp3=Button(F3,text="Take Onboard",height=3,width=30,command=onboard)
 EActp3.grid(row=3,column=1,padx=4,pady=4)
-EActp4=Button(F3,text="Relief Instructor",height=3,width=30)
+EActp4=Button(F3,text="Relief Instructor",height=3,width=30,command=Relief)
 EActp4.grid(row=4,column=1,padx=4,pady=4)
 #================================================================
-EActp=Button(F3,text="Send Promotional Emails",height=3,width=30)
+EActp=Button(F3,text="Push Alerts",height=3,width=30,command=announcment)
 EActp.grid(row=0,column=2,padx=4,pady=4)
 EActp1=Button(F3,text="Generate Certificates",height=3,width=30,command=generate_cert)
 EActp1.grid(row=1,column=2,padx=4,pady=4)
