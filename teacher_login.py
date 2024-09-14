@@ -102,4 +102,5 @@ Submit=Button(F4,text="Login",font=("timesnewroman",10,"bold"),width=27,command=
 Submit.grid(row=5,column=1,pady=10)
 Copy.pack(fill=X,anchor="s",side="bottom")
 Win.bind('<Escape>',quit)
+Win.bind('<Return',checkpassword)
 Win.mainloop()

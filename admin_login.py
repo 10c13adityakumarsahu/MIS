@@ -38,7 +38,7 @@ passwordvar=StringVar
 registrationvar=IntVar
 captchavar=IntVar
 #===================Mysql integration=====================
-def checkpassword():
+def checkpassword(event=None):
     try:
         a=int(F11.get())
         b=F8.get()
@@ -92,7 +92,7 @@ F6=Label(F4,text="Password:",font=style,background=backcolour,foreground=front,a
 F6.grid(row=1,column=0,pady=2)
 registration_id=Entry(F4,width=15,font=style,textvariable=registrationvar,border="3")
 registration_id.grid(row=0,column=1,pady=2)
-F8=Entry(F4,width=15,font=style,textvariable=passwordvar,border="3")
+F8=Entry(F4,width=15,font=style,textvariable=passwordvar,border="3",show='*')
 F8.grid(row=1,column=1,pady=2)
 F9=Label(F4,text="Enter Captcha:",font=style,background=backcolour,foreground=front,anchor="nw",width=13,border="2")
 F9.grid(row=2,column=0,pady=2)
@@ -111,4 +111,5 @@ def syslog(a):
     user=a
     print(user)
 Win.bind('<Escape>',quit)
+Win.bind('<Return>',checkpassword)
 Win.mainloop()
